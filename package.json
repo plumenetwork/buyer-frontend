@@ -3,7 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+<<<<<<< HEAD
     "dev": "pnpm run lint && pnpm run prettier && next dev --turbo",
+=======
+    "dev": "next dev --turbo",
+>>>>>>> 761d1a2 (feat(wip): project setup and (wip)product detail page)
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
