@@ -1,4 +1,4 @@
-import Image from 'next/image';
+// import Image from 'next/image';
 import Navbar from '@/components/navbar';
 import Breadcrum from '@/components/breadcrum';
 import AssetInfo from '@/components/asset-info';
