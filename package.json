@@ -1,0 +1,31 @@
+{
+  "name": "asset-buyer-mvp",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm run lint && pnpm run prettier && next dev --turbo",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "prettier": "prettier --write '**/**/*.{js,jsx,ts,tsx,css}'"
+  },
+  "dependencies": {
+    "flowbite": "^2.3.0",
+    "next": "14.1.0",
+    "prettier-plugin-tailwindcss": "^0.5.11",
+    "react": "^18",
+    "react-dom": "^18"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "autoprefixer": "^10.0.1",
+    "eslint": "^8",
+    "eslint-config-next": "14.1.0",
+    "eslint-plugin-unused-imports": "^3.1.0",
+    "postcss": "^8",
+    "tailwindcss": "^3.3.0",
+    "typescript": "^5"
+  }
+}
