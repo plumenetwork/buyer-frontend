@@ -22,7 +22,7 @@ export default function RootLayout({
               accentColor: '#6A6FF5',
               theme: '#FFFFFF',
               showWalletLoginFirst: false,
-              logo: '/privy.png',
+              logo: '/plume-logo.svg',
             },
             loginMethods: [
               'wallet',
