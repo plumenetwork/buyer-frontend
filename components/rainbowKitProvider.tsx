@@ -1,63 +1,55 @@
 'use client';
 
-import * as React from 'react';
+import '@rainbow-me/rainbowkit/styles.css';
+import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import { configureChains, createConfig, WagmiConfig } from 'wagmi';
+import { bsc, mainnet } from 'wagmi/chains';
+import { publicProvider } from 'wagmi/providers/public';
+import binanceWallet from '@binance/w3w-rainbow-connector';
 import {
-  RainbowKitProvider,
-  getDefaultWallets,
-  getDefaultConfig,
-} from '@rainbow-me/rainbowkit';
-import {
-  trustWallet,
-  ledgerWallet,
-  foxWallet,
-  rabbyWallet,
   bitgetWallet,
+  foxWallet,
+  trustWallet,
+  rabbyWallet,
   okxWallet,
+  injectedWallet,
+  rainbowWallet,
+  metaMaskWallet,
+  walletConnectWallet,
 } from '@rainbow-me/rainbowkit/wallets';
-import {
-  arbitrum,
-  base,
-  mainnet,
-  optimism,
-  polygon,
-  sepolia,
-  zora,
-} from 'wagmi/chains';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { WagmiProvider } from 'wagmi';
+import { connectorsForWallets } from '@rainbow-me/rainbowkit';
 
-const { wallets } = getDefaultWallets();
+const { chains, publicClient, webSocketPublicClient } = configureChains(
+  [bsc, mainnet],
+  [publicProvider()]
+);
 
-const config = getDefaultConfig({
-  appName: 'RainbowKit demo',
-  projectId: 'YOUR_PROJECT_ID',
-  wallets: [
-    ...wallets,
-    {
-      groupName: 'Recommended',
-      wallets: [
-        trustWallet,
-        ledgerWallet,
-        foxWallet,
-        rabbyWallet,
-        bitgetWallet,
-        okxWallet,
-      ],
-    },
-  ],
-  chains: [
-    mainnet,
-    polygon,
-    optimism,
-    arbitrum,
-    base,
-    zora,
-    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [sepolia] : []),
-  ],
-  ssr: true,
+const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID as string;
+
+const connectors = connectorsForWallets([
+  {
+    groupName: 'Recommended',
+    wallets: [
+      injectedWallet({ projectId, chains }),
+      metaMaskWallet({ projectId, chains }),
+      bitgetWallet({ projectId, chains }),
+      walletConnectWallet({ projectId, chains }),
+      okxWallet({ projectId, chains }),
+      rainbowWallet({ projectId, chains }),
+      foxWallet({ projectId, chains }),
+      trustWallet({ projectId, chains }),
+      rabbyWallet({ chains }),
+      binanceWallet({ chains }),
+    ],
+  },
+]);
+
+const wagmiConfig = createConfig({
+  autoConnect: true,
+  connectors,
+  publicClient,
+  webSocketPublicClient,
 });
-
-const queryClient = new QueryClient();
 
 export default function RainbowKitProviders({
   children,
@@ -65,10 +57,8 @@ export default function RainbowKitProviders({
   children: React.ReactNode;
 }) {
   return (
-    <WagmiProvider config={config}>
-      <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider>{children}</RainbowKitProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
+    <WagmiConfig config={wagmiConfig}>
+      <RainbowKitProvider chains={chains}>{children}</RainbowKitProvider>
+    </WagmiConfig>
   );
 }
