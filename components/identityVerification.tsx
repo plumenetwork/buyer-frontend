@@ -1,14 +1,18 @@
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useRef } from 'react';
+import { useState, useRef } from 'react';
 
 export default function IdentityVerification() {
+  const [status, setStatus] = useState<number | null>(null);
+  const [message, setMessage] = useState<string>('');
+  const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
+
   const inputRef = useRef<HTMLInputElement>(null);
   const subscribeUser = async (e: any) => {
     e.preventDefault();
-
+    setButtonDisabled(true);
     if (inputRef.current) {
-      const res = await fetch('/api/newsletter', {
+      const response = await fetch('/api/newsletter', {
         body: JSON.stringify({
           email: inputRef.current.value,
         }),
@@ -19,6 +23,23 @@ export default function IdentityVerification() {
 
         method: 'POST',
       });
+      const data = await response.json();
+      if (data.status >= 400) {
+        setStatus(data.status);
+        if (data.title === 'Member Exists') {
+          setMessage('You are already subscribed to our newsletter');
+        } else if (data.title === 'Invalid Resource') {
+          setMessage('Invalid email address');
+        }
+      } else {
+        setStatus(201);
+        setMessage('Thank you for subscribing');
+      }
+
+      setTimeout(() => {
+        setMessage('');
+        setButtonDisabled(false);
+      }, 2000);
     }
   };
   return (
@@ -38,7 +59,20 @@ export default function IdentityVerification() {
         placeholder='example@email.com'
         autoCorrect='off'
       />
-      <Button className='my-5 h-auto w-full' onClick={subscribeUser}>
+      {message && (
+        <p
+          className={`${
+            status !== 201 ? 'text-red-500' : 'text-green-500'
+          } pt-4 `}
+        >
+          {message}
+        </p>
+      )}
+      <Button
+        disabled={buttonDisabled}
+        className='my-5 h-auto w-full disabled:opacity-50'
+        onClick={subscribeUser}
+      >
         Continue
       </Button>
       <p className='mt-5 text-center text-sm text-gray-500'>
