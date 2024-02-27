@@ -1,3 +1,10 @@
+'use client';
+import NavBar from '@/components/navbar';
+
 export default function TokenPurchase() {
-  return <h1>Token Purchase</h1>;
+  return (
+    <>
+      <NavBar />
+    </>
+  );
 }

@@ -1,4 +1,5 @@
 'use client';
+
 import { usePrivy } from '@privy-io/react-auth';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -7,6 +8,7 @@ import { Inter } from 'next/font/google';
 import { motion } from 'framer-motion';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount } from 'wagmi';
+
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
@@ -18,14 +20,15 @@ export default function Home() {
   const { ready, login, authenticated } = usePrivy();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen); //TODO: remove this function
+    setSidebarOpen(!sidebarOpen);
   };
+
   useEffect(() => {
     (async () => {
       if (ready && !authenticated && !isConnected) {
         login();
       }
-      if (ready && authenticated) {
+      if ((ready && authenticated) || isConnected) {
         router.push('/token-purchase');
       }
     })();
