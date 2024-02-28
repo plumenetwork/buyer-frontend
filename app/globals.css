@@ -74,3 +74,46 @@
     @apply bg-background text-foreground;
   }
 }
+
+.navigation_menu {
+  @apply m-16 text-sm;
+}
+
+.navigation_tabs {
+  @apply relative pl-[45px] before:absolute before:left-[18px] before:top-[15%] before:inline-block before:h-[75%] before:w-2.5 before:border-l-2 before:border-solid before:border-l-[#CCC] before:content-[''];
+  list-style: none;
+}
+
+.navigation_menu li {
+  @apply relative before:absolute before:left-[-30px] before:inline-block before:h-full before:w-2.5 before:content-[''] after:absolute after:left-[-39px] after:top-1/4 after:mx-auto after:mb-2.5 after:mt-0 after:block after:h-[25px] after:w-[25px] after:rounded-[50%] after:border after:border-solid after:border-[#DDD] after:bg-white after:text-center;
+}
+
+.navigation_menu li:not(:last-child) {
+  @apply pb-[25px];
+}
+
+.navigation_menu li.tab_active:after {
+  @apply absolute border border-solid border-true-blue text-true-blue content-["\2022"];
+  @apply top-9 -translate-y-6 transform;
+  /* Additional styles for centering and size, adjust as needed */
+  @apply flex h-6 w-6 items-center justify-center rounded-full;
+}
+
+.navigation_menu li.tab_inactive:after {
+  @apply border border-solid border-true-blue bg-true-blue text-center text-xl text-white content-tick;
+  @apply top-1/2 -translate-y-6 transform;
+  @apply flex h-6 w-6 items-center justify-center rounded-full;
+}
+
+.navigation_tabs li,
+.navigation_tabs li {
+  @apply block pt-2 text-black no-underline;
+}
+.navigation_tabs li.tab_disabled {
+  @apply text-gray-600;
+}
+
+.navigation_tabs li.tab_active,
+.navigation_tabs li.tab_inactive {
+  @apply text-true-blue;
+}
