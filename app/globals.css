@@ -117,3 +117,11 @@
 .navigation_tabs li.tab_inactive {
   @apply text-true-blue;
 }
+
+.signed_style {
+  @apply rounded-2xl bg-[#0E9F6E] px-2 py-1 text-xs font-medium text-white;
+}
+
+.not_signed_style {
+  @apply rounded-2xl bg-secondary px-2 py-1 text-xs font-medium text-gray-400;
+}

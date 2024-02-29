@@ -17,9 +17,9 @@ export default function TokenPurchase() {
       <NavBar />
       <div className={`flex h-screen w-full ${inter.className}`}>
         <StepperBar tabs={tabs} />
-        {tabs === 0 ? (
+        {tabs === 1 ? (
           <IdentityVerification setTabs={setTabs} />
-        ) : tabs === 1 ? (
+        ) : tabs === 0 ? (
           <DocumentSignin setTabs={setTabs} />
         ) : (
           <TokenPurchaseComponent />
