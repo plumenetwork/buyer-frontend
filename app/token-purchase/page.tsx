@@ -6,6 +6,7 @@ import { Inter } from 'next/font/google';
 import { useState } from 'react';
 import DocumentSignin from '@/components/documentSignin';
 import TokenPurchaseComponent from '@/components/tokenPurchase';
+import ThankYou from '@/components/thankYou';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -17,12 +18,14 @@ export default function TokenPurchase() {
       <NavBar />
       <div className={`flex h-screen w-full ${inter.className}`}>
         <StepperBar tabs={tabs} />
-        {tabs === 1 ? (
+        {tabs === 0 ? (
           <IdentityVerification setTabs={setTabs} />
-        ) : tabs === 0 ? (
+        ) : tabs === 1 ? (
           <DocumentSignin setTabs={setTabs} />
+        ) : tabs === 2 ? (
+          <TokenPurchaseComponent setTabs={setTabs} />
         ) : (
-          <TokenPurchaseComponent />
+          <ThankYou />
         )}
       </div>
     </>

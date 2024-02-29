@@ -101,7 +101,7 @@
 
 .navigation_menu li.tab_inactive:after {
   @apply border border-solid border-true-blue bg-true-blue text-center text-xl text-white content-tick;
-  @apply top-1/2 -translate-y-6 transform;
+  @apply top-1/2 -translate-y-4 transform;
   @apply flex h-6 w-6 items-center justify-center rounded-full;
 }
 
