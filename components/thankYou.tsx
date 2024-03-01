@@ -27,30 +27,54 @@ export default function ThankYou() {
           Follow us
         </div>
         <div className='flex flex-row space-x-3'>
-          <Image
-            src='/twitter-logo.svg'
-            alt='Twitter Icon'
-            width={22}
-            height={22}
-          />
-          <Image
-            src='/website-logo.svg'
-            alt='website Icon'
-            width={22}
-            height={22}
-          />
-          <Image
-            src='/linkedin-logo.svg'
-            alt='LinkedIn Icon'
-            width={22}
-            height={22}
-          />
-          <Image
-            src='/discord-logo.svg'
-            alt='Instagram Icon'
-            width={22}
-            height={22}
-          />
+          <a
+            href='https://twitter.com/plumenetwork'
+            target='_blank'
+            rel='noopener noreferrer'
+          >
+            <Image
+              src='/twitter-logo.svg'
+              alt='Twitter Icon'
+              width={22}
+              height={22}
+            />
+          </a>
+          <a
+            href='https://www.plumenetwork.xyz/'
+            target='_blank'
+            rel='noopener noreferrer'
+          >
+            <Image
+              src='/website-logo.svg'
+              alt='website Icon'
+              width={22}
+              height={22}
+            />
+          </a>
+          <a
+            href='https://www.linkedin.com/company/plume-network'
+            target='_blank'
+            rel='noopener noreferrer'
+          >
+            <Image
+              src='/linkedin-logo.svg'
+              alt='LinkedIn Icon'
+              width={22}
+              height={22}
+            />
+          </a>
+          <a
+            href='https://discord.gg/plume'
+            target='_blank'
+            rel='noopener noreferrer'
+          >
+            <Image
+              src='/discord-logo.svg'
+              alt='Discord Icon'
+              width={22}
+              height={22}
+            />
+          </a>
         </div>
       </div>
     </div>

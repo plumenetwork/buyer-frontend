@@ -1,24 +1,23 @@
-import type { NextApiResponse } from 'next';
+import { NextResponse } from 'next/server';
 
-function validateEmail(email: string) {
-  const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-  return regex.test(email);
-}
+const validateEmail = (email: string) => {
+  return String(email)
+    .toLowerCase()
+    .match(
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    );
+};
 
-export async function POST(req: Request, res: NextApiResponse) {
+export async function POST(req: Request) {
   try {
     const { email } = await req.json();
-    if (!email && validateEmail(email)) {
-      return res.status(400).json({ error: 'Email is required' });
+    if (!email || !validateEmail(email)) {
+      return NextResponse.json({ status: 400, title: 'Invalid Resource' });
     }
 
     const MailchimpKey = process.env.MAILCHIMP_API_KEY;
     const MailchimpServer = process.env.MAILCHIMP_API_SERVER;
     const MailchimpAudience = process.env.MAILCHIMP_AUDIENCE_ID;
-
-    if (!MailchimpKey || !MailchimpServer || !MailchimpAudience) {
-      return res.status(500).json({ error: 'Server configuration error' });
-    }
 
     const customUrl = `https://${MailchimpServer}.api.mailchimp.com/3.0/lists/${MailchimpAudience}/members`;
 
@@ -30,20 +29,13 @@ export async function POST(req: Request, res: NextApiResponse) {
       },
       body: JSON.stringify({
         email_address: email,
-        status: 201,
+        status: 'subscribed',
       }),
     });
-
-    if (!response.ok) {
-      const error = await response.json();
-      return res
-        .status(response.status)
-        .json({ error: error.detail || 'Error subscribing' });
-    }
     const received = await response.json();
-    return res.json(received);
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return NextResponse.json(received);
+  } catch (e) {
+    console.log('Error in newsletter route', e);
+    return NextResponse.json({ status: 400, title: 'Invalid Resource' });
   }
 }
