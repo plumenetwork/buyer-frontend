@@ -2,7 +2,11 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useState, useRef } from 'react';
 
-export default function IdentityVerification(props: any) {
+export default function IdentityVerification({
+  setTabs,
+}: {
+  setTabs: React.Dispatch<React.SetStateAction<number>>;
+}) {
   const [status, setStatus] = useState<number | null>(null);
   const [message, setMessage] = useState<string>('');
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
@@ -34,7 +38,7 @@ export default function IdentityVerification(props: any) {
       } else {
         setStatus(201);
         //setComponent
-        props.setTabs(1);
+        setTabs(1);
         setMessage('Thank you for subscribing');
       }
 

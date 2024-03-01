@@ -1,7 +1,11 @@
 import TokenInfo from './tokenInfo';
 import { Button } from './ui/button';
 
-export default function TokenPurchaseComponent(props: any) {
+export default function TokenPurchaseComponent({
+  setTabs,
+}: {
+  setTabs: React.Dispatch<React.SetStateAction<number>>;
+}) {
   return (
     <div className='flex w-4/6 flex-col items-center bg-white px-52 py-52 2xl:px-80  2xl:py-64'>
       <h1 className='text-3xl font-semibold leading-9'>Token Purchase</h1>
@@ -12,7 +16,7 @@ export default function TokenPurchaseComponent(props: any) {
       <TokenInfo />
       <Button
         onClick={() => {
-          props.setTabs(3);
+          setTabs(3);
         }}
         className='my-3 h-[15%] w-full text-base hover:bg-[#EBF5FF] hover:text-[#A3A3A3]'
       >

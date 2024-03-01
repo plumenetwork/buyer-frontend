@@ -33,6 +33,13 @@ export async function POST(req: Request, res: NextApiResponse) {
         status: 201,
       }),
     });
+
+    if (!response.ok) {
+      const error = await response.json();
+      return res
+        .status(response.status)
+        .json({ error: error.detail || 'Error subscribing' });
+    }
     const received = await response.json();
     return res.json(received);
   } catch (error) {

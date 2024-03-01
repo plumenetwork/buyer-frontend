@@ -2,7 +2,11 @@ import { Button } from './ui/button';
 import Image from 'next/image';
 import { useState } from 'react';
 
-export default function DocumentSignin(props: any) {
+export default function DocumentSignin({
+  setTabs,
+}: {
+  setTabs: React.Dispatch<React.SetStateAction<number>>;
+}) {
   const [signedStatus, setSignedStatus] = useState('not_signed_style');
   const [signedMessage, setSignedMessage] = useState('not signed');
 
@@ -15,7 +19,7 @@ export default function DocumentSignin(props: any) {
         '_blank'
       );
     } else {
-      props.setTabs(2);
+      setTabs(2);
     }
   };
   return (

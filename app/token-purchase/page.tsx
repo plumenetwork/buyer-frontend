@@ -5,6 +5,7 @@ import StepperBar from '@/components/stepperBar';
 import { Inter } from 'next/font/google';
 import { useState } from 'react';
 import DocumentSignin from '@/components/documentSignin';
+
 import TokenPurchaseComponent from '@/components/tokenPurchase';
 import ThankYou from '@/components/thankYou';
 
@@ -13,20 +14,24 @@ const inter = Inter({ subsets: ['latin'] });
 export default function TokenPurchase() {
   const [tabs, setTabs] = useState(0);
 
+  const getStepComponent = (tabs: number) => {
+    switch (tabs) {
+      case 0:
+        return <IdentityVerification setTabs={setTabs} />;
+      case 1:
+        return <DocumentSignin setTabs={setTabs} />;
+      case 2:
+        return <TokenPurchaseComponent setTabs={setTabs} />;
+      default:
+        return <ThankYou />;
+    }
+  };
   return (
     <>
       <NavBar />
       <div className={`flex h-screen w-full ${inter.className}`}>
         <StepperBar tabs={tabs} />
-        {tabs === 0 ? (
-          <IdentityVerification setTabs={setTabs} />
-        ) : tabs === 1 ? (
-          <DocumentSignin setTabs={setTabs} />
-        ) : tabs === 2 ? (
-          <TokenPurchaseComponent setTabs={setTabs} />
-        ) : (
-          <ThankYou />
-        )}
+        {getStepComponent(tabs)}
       </div>
     </>
   );
