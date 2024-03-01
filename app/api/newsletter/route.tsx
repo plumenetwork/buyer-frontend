@@ -1,9 +1,14 @@
 import type { NextApiResponse } from 'next';
 import { NextResponse } from 'next/server';
 
+function validateEmail(email: string) {
+  const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+  return regex.test(email);
+}
+
 export async function POST(req: Request, res: NextApiResponse) {
   const { email } = await req.json();
-  if (!email) {
+  if (!email && validateEmail(email)) {
     return res.status(400).json({ error: 'Email is required' });
   }
 
