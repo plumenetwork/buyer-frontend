@@ -27,7 +27,7 @@ export default function IdentityVerification(props: any) {
       if (data.status >= 400) {
         setStatus(data.status);
         if (data.title === 'Member Exists') {
-          setMessage('You are already subscribed to our newsletter');
+          setMessage('You are an existing memeber');
         } else if (data.title === 'Invalid Resource') {
           setMessage('Invalid email address');
         }
