@@ -10,7 +10,7 @@ export default function TokenPurchaseComponent({
     <div className='flex w-4/6 flex-col items-center bg-white px-52 py-52 2xl:px-80  2xl:py-64'>
       <h1 className='text-3xl font-semibold leading-9'>Token Purchase</h1>
       <h3 className='my-4 text-base font-normal leading-6 text-gray-700'>
-        Lorem Ipsum
+        Review details of your token before making the purchase.
       </h3>
       <div className='m-1 self-start text-xl font-semibold'>Item Overview</div>
       <TokenInfo />

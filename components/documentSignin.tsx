@@ -28,7 +28,7 @@ export default function DocumentSignin({
         Documents to Sign
       </h1>
       <h3 className='my-3 text-base font-normal leading-6 text-gray-700'>
-        Please read carefully and sign documents.
+        Please read the documents carefully and sign them.
       </h3>
       <div className='flex w-full flex-row justify-between py-12'>
         <div className='flex flex-row'>
