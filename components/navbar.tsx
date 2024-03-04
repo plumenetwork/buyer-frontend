@@ -63,7 +63,11 @@ export default function NavBar() {
     router.push('/');
   };
   return (
-    <div className='absolute right-8 top-6'>
+    <div className='absolute right-8 top-6 flex flex-row items-center justify-center'>
+      <div className='mr-3 flex flex-row items-center justify-center rounded-full bg-[#F5F5F5] p-2 text-xs font-medium text-[#737373]'>
+        <span className='me-3 flex h-3 w-3 rounded-full bg-green-500'></span>
+        Plume Testnet
+      </div>
       <DropdownMenu>
         <DropdownMenuTrigger className='flex items-center justify-center rounded-xl border-2 border-gray-300 p-2'>
           <div className='items-center justify-center text-sm text-white'>
