@@ -5,13 +5,13 @@ import StepperBar from '@/components/stepperBar';
 import { Inter } from 'next/font/google';
 import { useState } from 'react';
 import DocumentSignin from '@/components/documentSignin';
-
 import TokenPurchaseComponent from '@/components/tokenPurchase';
 import ThankYou from '@/components/thankYou';
+import withAuth from '@/middleware/auth';
 
 const inter = Inter({ subsets: ['latin'] });
 
-export default function TokenPurchase() {
+function TokenPurchase() {
   const [tabs, setTabs] = useState(0);
 
   const getStepComponent = (tabs: number) => {
@@ -36,3 +36,5 @@ export default function TokenPurchase() {
     </>
   );
 }
+
+export default withAuth(TokenPurchase);

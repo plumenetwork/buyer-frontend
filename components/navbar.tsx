@@ -23,7 +23,7 @@ function shortenAddress(address: string) {
 }
 
 function customizeAddress(address: string) {
-  if (!address || address.length < 13) return address;
+  if (!address || address.length < 15) return address;
   return `${address.slice(0, 15)}...${address.slice(-2)}`;
 }
 
