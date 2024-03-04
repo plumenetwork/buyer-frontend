@@ -1,5 +1,5 @@
-import { Button } from './ui/button';
 import Image from 'next/image';
+import { Button } from './ui/button';
 
 export default function TokenInfo() {
   return (
@@ -24,7 +24,7 @@ export default function TokenInfo() {
         className='my-3 flex w-full justify-between bg-[#FAFAFA] text-black hover:bg-[#efecec]'
         onClick={() => {
           window.open(
-            'https://app.ethsign.xyz/signin?redirect=%2Fcontract%2FES-V-c749R8BGbo2WxWQjSfHU0',
+            'https://app.ethsign.xyz/share/dowlwp6nbq5r',
             '_blank'
           );
         }}
