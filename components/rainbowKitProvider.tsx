@@ -8,6 +8,7 @@ import { publicProvider } from 'wagmi/providers/public';
 import binanceWallet from '@binance/w3w-rainbow-connector';
 import {
   bitgetWallet,
+  coinbaseWallet,
   foxWallet,
   trustWallet,
   rabbyWallet,
@@ -34,6 +35,7 @@ const connectors = connectorsForWallets([
       metaMaskWallet({ projectId, chains }),
       bitgetWallet({ projectId, chains }),
       walletConnectWallet({ projectId, chains }),
+      coinbaseWallet({ appName: projectId, chains }),
       okxWallet({ projectId, chains }),
       rainbowWallet({ projectId, chains }),
       foxWallet({ projectId, chains }),
