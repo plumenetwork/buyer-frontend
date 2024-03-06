@@ -24,7 +24,7 @@ export default function TokenInfo() {
         className='my-3 flex w-full justify-between bg-[#FAFAFA] text-black hover:bg-[#efecec]'
         onClick={() => {
           window.open(
-            'https://app.ethsign.xyz/share/dowlwp6nbq5r',
+            'https://app.ethsign.xyz/contract/ES-V-rU1Ye7i-huQpWE5ifk7MJ',
             '_blank'
           );
         }}
