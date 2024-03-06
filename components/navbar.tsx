@@ -104,7 +104,7 @@ export default function NavBar() {
                 toast('Copied to Clipboard', {
                   action: {
                     label: 'X',
-                    onClick: () => console.log('Undo'),
+                    onClick: () => console.log('cross'),
                   },
                 });
                 navigator.clipboard.writeText(userAddress);
