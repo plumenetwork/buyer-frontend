@@ -1,6 +1,10 @@
 import Image from 'next/image';
 import TokenInfo from './tokenInfo';
-export default function ThankYou() {
+export default function ThankYou({
+  transactionLink,
+}: {
+  transactionLink: string;
+}) {
   return (
     <div className='flex w-4/6 flex-col items-center bg-white px-52 py-52 2xl:px-80  2xl:py-64'>
       <Image src='/success.svg' alt='Thank You' width={80} height={80} />
@@ -11,7 +15,15 @@ export default function ThankYou() {
         Token will appear shortly in your wallet.
       </h3>
       <div className='flex flex-row'>
-        <button className='text-sm font-medium text-[#1C64F2]'>
+        <button
+          onClick={() => {
+            window.open(
+              `https://plume-testnet.explorer.caldera.xyz/tx/${transactionLink}`,
+              '_blank'
+            );
+          }}
+          className='text-sm font-medium text-[#1C64F2]'
+        >
           View Transaction{' '}
         </button>
         <Image

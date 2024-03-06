@@ -2,21 +2,25 @@
 
 import TokenInfo from './tokenInfo';
 import { Button } from './ui/button';
-import { abi } from '../lib/abi';
+import { abi } from '../lib/MintABI';
 import { useEffect, useState } from 'react';
 import ClipLoader from 'react-spinners/ClipLoader';
 import { plume } from '../lib/plumeChain';
-const CONTRACT_ADDRESS = '0x1bf8e4838ec63fb2518bb35c87c20f6469d7938d';
 import { useContractWrite, usePrepareContractWrite } from 'wagmi';
+import { useWallets } from '@privy-io/react-auth';
+const CONTRACT_ADDRESS = '0x1bf8e4838ec63fb2518bb35c87c20f6469d7938d';
 export default function TokenPurchaseComponent({
   setTabs,
+  setTransactionLink,
 }: {
   setTabs: React.Dispatch<React.SetStateAction<number>>;
+  setTransactionLink: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [isLoader, setIsLoader] = useState(false);
   const [remainingTime, setRemainingTime] = useState(0);
   const [TestnetToken, setTestnetToken] = useState(false);
+  const { wallets } = useWallets();
   const { config } = usePrepareContractWrite({
     address: CONTRACT_ADDRESS,
     abi: abi,
@@ -28,26 +32,39 @@ export default function TokenPurchaseComponent({
 
   useEffect(() => {
     if (data != undefined) {
+      setTransactionLink(data.hash);
       setIsLoader(false);
       setTabs(3);
     }
-  }),
-    [data];
+  }, [data]);
 
   const mintNft = async () => {
     setIsLoader(true);
     try {
-      let tx = write ? write() : undefined;
+      let tx = write && write();
       console.log(tx);
     } catch (error) {
       console.error('Error minting token', error);
     }
   };
 
-  const getTestnetToken = async () => {
-    // functionality for getting testnet token
+  const getTestnetToken = async (e: any) => {
     setTestnetToken(true);
-    setTimeout(() => {
+    e.preventDefault();
+    let address = '';
+    if (wallets && wallets[0]) {
+      address = wallets[0].address;
+    }
+    let response = await fetch('/api/faucet', {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        walletAddress: address,
+      }),
+    });
+    if (response) {
       setButtonDisabled(true);
       setTestnetToken(false);
       setRemainingTime(600);
@@ -56,7 +73,7 @@ export default function TokenPurchaseComponent({
           return time - 1;
         });
       }, 1000);
-    }, 5000);
+    }
   };
 
   return (

@@ -13,6 +13,7 @@ const inter = Inter({ subsets: ['latin'] });
 
 function TokenPurchase() {
   const [tabs, setTabs] = useState(0);
+  const [transactionLink, setTransactionLink] = useState('');
 
   const getStepComponent = (tabs: number) => {
     switch (tabs) {
@@ -21,9 +22,14 @@ function TokenPurchase() {
       case 1:
         return <DocumentSignin setTabs={setTabs} />;
       case 0:
-        return <TokenPurchaseComponent setTabs={setTabs} />;
+        return (
+          <TokenPurchaseComponent
+            setTabs={setTabs}
+            setTransactionLink={setTransactionLink}
+          />
+        );
       default:
-        return <ThankYou />;
+        return <ThankYou transactionLink={transactionLink} />;
     }
   };
   return (
