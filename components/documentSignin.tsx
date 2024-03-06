@@ -15,7 +15,7 @@ export default function DocumentSignin({
       setSignedStatus('signed_style');
       setSignedMessage('signed');
       window.open(
-        'https://app.ethsign.xyz/contract/ES-V-rU1Ye7i-huQpWE5ifk7MJ',
+        'https://app.ethsign.xyz/contract/ES-V-vg3AVOp0Y1wjGok38861m',
         '_blank'
       );
     } else {
