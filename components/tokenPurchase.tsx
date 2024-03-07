@@ -8,7 +8,6 @@ import ClipLoader from 'react-spinners/ClipLoader';
 import { plume } from '../lib/plumeChain';
 import { useContractWrite, usePrepareContractWrite } from 'wagmi';
 import { useWallets } from '@privy-io/react-auth';
-const CONTRACT_ADDRESS = '0x1bf8e4838ec63fb2518bb35c87c20f6469d7938d';
 export default function TokenPurchaseComponent({
   setTabs,
   setTransactionLink,
@@ -22,7 +21,7 @@ export default function TokenPurchaseComponent({
   const [TestnetToken, setTestnetToken] = useState(false);
   const { wallets } = useWallets();
   const { config } = usePrepareContractWrite({
-    address: CONTRACT_ADDRESS,
+    address: process.env.NEXT_PUBLIC_MINT_CONTRACT_ADDRESS as `0x${string}`,
     abi: abi,
     functionName: 'mint',
     chainId: plume.id,

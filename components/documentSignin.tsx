@@ -14,7 +14,7 @@ export default function DocumentSignin({
     if (signedStatus == 'not_signed_style') {
       setSignedStatus('signed_style');
       setSignedMessage('signed');
-      window.open(`${process.env.ETH_SIGNIN_LINK}`, '_blank');
+      window.open(`${process.env.NEXT_PUBLIC_ETH_SIGNIN_LINK}`, '_blank');
     } else {
       setTabs(2);
     }
