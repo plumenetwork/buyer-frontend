@@ -125,7 +125,7 @@ export default function NavBar() {
           <DropdownMenuItem>
             <button
               onClick={logoutHandler}
-              className='flex items-center font-medium text-gray-700 '
+              className='flex items-center text-sm font-semibold text-gray-700 '
             >
               <Image
                 src={'/logout.svg'}

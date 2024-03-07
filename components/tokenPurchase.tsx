@@ -28,15 +28,17 @@ export default function TokenPurchaseComponent({
     chainId: plume.id,
   });
 
-  const { data, write } = useContractWrite(config);
+  const { data, write, isError } = useContractWrite(config);
 
   useEffect(() => {
-    if (data != undefined) {
-      setTransactionLink(data.hash);
+    if (data !== undefined || isError) {
+      if (data) {
+        setTransactionLink(data.hash);
+        setTabs(3);
+      }
       setIsLoader(false);
-      setTabs(3);
     }
-  }, [data]);
+  }, [data, isError]);
 
   const mintNft = async () => {
     setIsLoader(true);
@@ -77,17 +79,19 @@ export default function TokenPurchaseComponent({
   };
 
   return (
-    <div className='flex w-4/6 flex-col items-center bg-white px-52 py-52 2xl:px-80  2xl:py-64'>
+    <div className='md:px-30 flex w-4/6 flex-col items-center bg-white px-52 py-52 lg:px-52 2xl:px-80  2xl:py-64'>
       <h1 className='text-3xl font-semibold leading-9'>Token Purchase</h1>
 
-      <h3 className='my-4 text-base font-normal leading-6 text-gray-700'>
+      <h3 className='my-4 px-16 text-center text-base font-normal leading-6 text-[#374151]'>
         Review details of your token before making the purchase.
       </h3>
-      <div className='m-1 self-start text-xl font-semibold'>Item Overview</div>
+      <div className='self-start text-xl font-semibold leading-8 text-[#1E1E24]'>
+        Item Overview
+      </div>
       <TokenInfo />
       <Button
         onClick={mintNft}
-        className='my-3 h-[15%] w-full text-base hover:bg-[#88c4ff] hover:text-[#A3A3A3] disabled:cursor-not-allowed disabled:bg-[#EBF5FF]'
+        className='my-3 aspect-[12/1] w-full text-base hover:bg-[#EBF5FF] hover:text-[#A3A3A3] disabled:cursor-not-allowed disabled:bg-[#EBF5FF]'
         disabled={isLoader}
       >
         {isLoader ? (
@@ -100,7 +104,7 @@ export default function TokenPurchaseComponent({
       </Button>
       <Button
         onClick={getTestnetToken}
-        className={`h-[15%] w-full text-base hover:bg-[#88c4ff] hover:text-[#A3A3A3] disabled:cursor-not-allowed disabled:bg-[#EBF5FF] disabled:text-[#A3A3A3] ${TestnetToken ? 'bg-[#47a3ff]' : 'bg-true-blue'}`}
+        className={`aspect-[12/1] w-full text-base hover:bg-[#EBF5FF] hover:text-[#A3A3A3] disabled:cursor-not-allowed disabled:bg-[#EBF5FF] disabled:text-[#A3A3A3] ${TestnetToken ? 'bg-[#47a3ff]' : 'bg-true-blue'}`}
         disabled={buttonDisabled}
       >
         {buttonDisabled ? (
@@ -112,10 +116,11 @@ export default function TokenPurchaseComponent({
         )}
       </Button>
 
-      <p className='m-4 px-20 text-center text-xs font-normal text-[#737373]	'>
-        *Copy that explicitly states that the user is minting a commemorative
-        token And that minting the token shows interest in the actual mainnet
-        offering
+      <p className='m-4 px-10 text-center text-xs font-normal text-[#737373]	'>
+        You are minting a commemorative token that holds no economic value.
+        These tokens do not represent real-world assets, cryptocurrency, fiat,
+        or any other store of value. They are merely symbolic and serve as proof
+        of participation or interest in the mainnet launch.
       </p>
     </div>
   );
