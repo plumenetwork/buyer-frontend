@@ -25,10 +25,7 @@ export default function TokenInfo() {
       <Button
         className='my-3 flex w-full justify-between bg-[#FAFAFA] text-sm font-medium leading-4 text-[#424242] hover:bg-[#efecec]'
         onClick={() => {
-          window.open(
-            'https://app.ethsign.xyz/contract/ES-V-vg3AVOp0Y1wjGok38861m',
-            '_blank'
-          );
+          window.open(`${process.env.ETH_SIGNIN_LINK}`, '_blank');
         }}
       >
         Private Sample Asset Document

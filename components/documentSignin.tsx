@@ -14,10 +14,7 @@ export default function DocumentSignin({
     if (signedStatus == 'not_signed_style') {
       setSignedStatus('signed_style');
       setSignedMessage('signed');
-      window.open(
-        'https://app.ethsign.xyz/contract/ES-V-vg3AVOp0Y1wjGok38861m',
-        '_blank'
-      );
+      window.open(`${process.env.ETH_SIGNIN_LINK}`, '_blank');
     } else {
       setTabs(2);
     }

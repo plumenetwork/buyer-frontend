@@ -101,12 +101,7 @@ export default function NavBar() {
           <DropdownMenuLabel className='pt-1 text-base font-medium text-gray-700'>
             <button
               onClick={() => {
-                toast('Copied to Clipboard', {
-                  action: {
-                    label: 'X',
-                    onClick: () => console.log('cross'),
-                  },
-                });
+                toast.success('Copied to Clipboard');
                 navigator.clipboard.writeText(userAddress);
               }}
               className='flex items-center'
@@ -139,7 +134,7 @@ export default function NavBar() {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <Toaster />
+      <Toaster closeButton />
     </div>
   );
 }

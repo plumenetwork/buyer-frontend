@@ -17,11 +17,11 @@ function TokenPurchase() {
 
   const getStepComponent = (tabs: number) => {
     switch (tabs) {
-      case 2:
+      case 0:
         return <IdentityVerification setTabs={setTabs} />;
       case 1:
         return <DocumentSignin setTabs={setTabs} />;
-      case 0:
+      case 2:
         return (
           <TokenPurchaseComponent
             setTabs={setTabs}
