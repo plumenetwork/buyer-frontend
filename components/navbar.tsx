@@ -14,8 +14,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import makeBlockie from 'ethereum-blockies-base64';
 import { useEffect, useState } from 'react';
-import { toast } from 'sonner';
-import { Toaster } from '@/components/ui/sonner';
+import { Toaster } from '@/components/ui/toaster';
+import { useToast } from '@/components/ui/use-toast';
 
 function shortenAddress(address: string) {
   if (!address || address.length < 10) return address;
@@ -35,6 +35,7 @@ export default function NavBar() {
   const { disconnect } = useDisconnect();
   const [blockie, setBlockie] = useState('');
   const [userAddress, setUserAddress] = useState('');
+  const { toast } = useToast();
 
   const getAddressAndGenerateBlockie = () => {
     let address = '';
@@ -79,7 +80,7 @@ export default function NavBar() {
               alt='profile-avatar'
             />
           </div>
-          <div className='text-xm pt-1 font-semibold text-gray-700'>
+          <div className='pt-1 text-sm font-semibold leading-5 text-[#525252]'>
             {shortenAddress(userAddress)}
           </div>
           <div>
@@ -101,7 +102,9 @@ export default function NavBar() {
           <DropdownMenuLabel className='pt-1 text-base font-medium text-gray-700'>
             <button
               onClick={() => {
-                toast.success('Copied to Clipboard');
+                toast({
+                  title: 'Copy to clipboard',
+                });
                 navigator.clipboard.writeText(userAddress);
               }}
               className='flex items-center'
@@ -120,7 +123,7 @@ export default function NavBar() {
           <DropdownMenuItem>
             <button
               onClick={logoutHandler}
-              className='flex items-center text-sm font-semibold text-gray-700 '
+              className='flex items-center text-sm font-medium leading-5 text-[#424242] '
             >
               <Image
                 src={'/logout.svg'}
@@ -134,7 +137,7 @@ export default function NavBar() {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <Toaster closeButton />
+      <Toaster />
     </div>
   );
 }

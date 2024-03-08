@@ -31,7 +31,7 @@ export default function IdentityVerification({
       if (data.status >= 400) {
         setStatus(data.status);
         if (data.title === 'Member Exists') {
-          setMessage('You are an existing memeber');
+          setMessage('You are an existing member');
         } else if (data.title === 'Invalid Resource') {
           setMessage('Invalid email address');
         }
