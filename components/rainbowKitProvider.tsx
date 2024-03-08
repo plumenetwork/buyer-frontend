@@ -3,7 +3,6 @@
 import '@rainbow-me/rainbowkit/styles.css';
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import { configureChains, createConfig, WagmiConfig } from 'wagmi';
-import { bsc, mainnet } from 'wagmi/chains';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 import { plume } from '../lib/plumeChain';
 import binanceWallet from '@binance/w3w-rainbow-connector';
@@ -23,7 +22,7 @@ import {
 import { connectorsForWallets } from '@rainbow-me/rainbowkit';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [bsc, mainnet, plume],
+  [plume],
   [
     publicProvider(),
     jsonRpcProvider({
