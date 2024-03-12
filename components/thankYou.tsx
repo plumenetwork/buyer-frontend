@@ -40,7 +40,7 @@ export default function ThankYou({
         </div>
         <div className='flex flex-row space-x-3'>
           <a
-            href='https://www.plumenetwork.xyz/'
+            href={`${process.env.NEXT_PUBLIC_ISSUER_WEBSITE_URL}`}
             target='_blank'
             rel='noopener noreferrer'
           >
@@ -52,7 +52,7 @@ export default function ThankYou({
             />
           </a>
           <a
-            href='https://twitter.com/plumenetwork'
+            href={`${process.env.NEXT_PUBLIC_ISSUER_TWITTER_URL}`}
             target='_blank'
             rel='noopener noreferrer'
           >
@@ -64,7 +64,7 @@ export default function ThankYou({
             />
           </a>
           <a
-            href='https://www.linkedin.com/company/plume-network'
+            href={`${process.env.NEXT_PUBLIC_ISSUER_LINKEDIN_URL}`}
             target='_blank'
             rel='noopener noreferrer'
           >

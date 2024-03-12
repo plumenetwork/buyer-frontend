@@ -115,7 +115,7 @@ export default function TokenPurchaseComponent({
         )}
       </Button>
 
-      <p className='m-4 px-10 text-center text-xs font-normal text-[#737373]	'>
+      <p className='m-4 px-10 text-center text-xs font-normal text-[#737373]'>
         You are minting a commemorative token that holds no economic value.
         These tokens do not represent real-world assets, cryptocurrency, fiat,
         or any other store of value. They are merely symbolic and serve as proof
