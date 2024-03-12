@@ -72,9 +72,9 @@ export default function Home() {
           <div className='mt-5 flex flex-col gap-5'>
             <button
               className='flex items-center gap-3 rounded-md border border-gray-300 px-6 py-3 text-left text-sm font-medium text-gray-800'
-              onClick={async () => {
+              onClick={() => {
                 toggleSidebar();
-                await login();
+                login();
               }}
             >
               <Image

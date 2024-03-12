@@ -12,8 +12,8 @@ const withAuth = <P extends object>(
     const { isConnected } = useAccount();
     useLayoutEffect(() => {
       const checkAuth = async () => {
-        const isAuthenticated = ready && !authenticated && !isConnected;
-        if (isAuthenticated) {
+        const isNotAuthenticated = ready && !authenticated && !isConnected;
+        if (isNotAuthenticated) {
           router.replace('/');
         }
       };
