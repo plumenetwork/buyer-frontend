@@ -13,20 +13,19 @@ export default function TokenInfo() {
             height={80}
             className='mr-2 rounded'
           />
-          <div className='text-sm font-semibold'>1x Tokenized Share</div>
+          <div className='text-sm font-semibold leading-5 text-[#424242]'>
+            1x Commemorative NFT
+          </div>
         </div>
-        <div className='text-sm font-medium text-gray-500'>$5,000 (USDC)</div>
+        <div className='text-sm font-medium text-[#737373]'>$0 (USDC)</div>
       </div>
-      <div className='mt-2 self-start text-xs font-medium uppercase text-gray-500'>
-        Material
+      <div className='mt-2 self-start text-xs font-medium uppercase text-[#737373]'>
+        Materials
       </div>
       <Button
-        className='my-3 flex w-full justify-between bg-[#FAFAFA] text-black hover:bg-[#efecec]'
+        className='my-3 flex w-full justify-between bg-[#FAFAFA] text-sm font-medium leading-4 text-[#424242] hover:bg-[#efecec]'
         onClick={() => {
-          window.open(
-            'https://app.ethsign.xyz/contract/ES-V-vg3AVOp0Y1wjGok38861m',
-            '_blank'
-          );
+          window.open(`${process.env.NEXT_PUBLIC_ETH_SIGNIN_LINK}`, '_blank');
         }}
       >
         Private Sample Asset Document

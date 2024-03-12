@@ -35,7 +35,6 @@ export async function POST(req: Request) {
     const received = await response.json();
     return NextResponse.json(received);
   } catch (e) {
-    console.log('Error in newsletter route', e);
     return NextResponse.json({ status: 400, title: 'Invalid Resource' });
   }
 }

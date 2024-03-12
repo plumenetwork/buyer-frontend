@@ -31,7 +31,7 @@ export default function IdentityVerification({
       if (data.status >= 400) {
         setStatus(data.status);
         if (data.title === 'Member Exists') {
-          setMessage('You are an existing memeber');
+          setMessage('You are an existing member');
         } else if (data.title === 'Invalid Resource') {
           setMessage('Invalid email address');
         }
@@ -49,13 +49,13 @@ export default function IdentityVerification({
     }
   };
   return (
-    <div className='flex w-4/6 flex-col items-center bg-white px-52 py-52 2xl:px-80  2xl:py-64'>
-      <h1 className='m-6 text-3xl font-semibold text-black'>
+    <div className='md:px-30 flex w-4/6 flex-col items-center bg-white py-52 lg:px-52 2xl:px-80  2xl:py-64'>
+      <h1 className='m-6 text-3xl font-semibold text-[#1E1E24]'>
         Identity Verification
       </h1>
-      <h3 className='mb-8 text-center text-base text-gray-700'>
-        Please enter your email into the following box if you would like to
-        continue, and be notified of the final launch of this asset on mainnet.
+      <h3 className='mb-8 text-center text-base font-normal leading-6 text-[#374151]'>
+        Please enter your email to continue. You will be notified when the real
+        asset launches to be first in line to purchase it.
       </h3>
       <p className='mb-2 self-start text-sm font-medium'>Email Address</p>
       <Input
@@ -76,12 +76,12 @@ export default function IdentityVerification({
       )}
       <Button
         disabled={buttonDisabled}
-        className='my-5 h-auto w-full disabled:opacity-50'
+        className='my-5 aspect-[10/1] w-full disabled:opacity-50'
         onClick={subscribeUser}
       >
         Continue
       </Button>
-      <p className='mt-5 text-center text-sm text-gray-500'>
+      <p className='mt-5 text-center text-xs font-normal text-[#737373]'>
         To purchase this real-world asset on mainnet, you will have to undergo a
         Know Your Customer (KYC) process with an external provider. This will
         involve sending personal information like your name, date of birth, and
