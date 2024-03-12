@@ -12,12 +12,26 @@ export async function POST(req: Request) {
   try {
     const { email } = await req.json();
     if (!email || !validateEmail(email)) {
-      return NextResponse.json({ status: 400, title: 'Invalid Resource' });
+      return NextResponse.json({
+        status: 400,
+        title: 'Invalid Email Address',
+        description:
+          'Please provide a valid email address. (e.g., user@example.com)',
+      });
     }
 
     const MailchimpKey = process.env.MAILCHIMP_API_KEY;
     const MailchimpServer = process.env.MAILCHIMP_API_SERVER;
     const MailchimpAudience = process.env.MAILCHIMP_AUDIENCE_ID;
+
+    if (!MailchimpKey || !MailchimpServer || !MailchimpAudience) {
+      return NextResponse.json({
+        status: 500,
+        title: 'Internal Server Error',
+        description:
+          'We encountered an unexpected issue on our end. Please try again later or contact support if the problem persists.',
+      });
+    }
 
     const customUrl = `https://${MailchimpServer}.api.mailchimp.com/3.0/lists/${MailchimpAudience}/members`;
 
@@ -33,8 +47,14 @@ export async function POST(req: Request) {
       }),
     });
     const received = await response.json();
+
     return NextResponse.json(received);
   } catch (e) {
-    return NextResponse.json({ status: 400, title: 'Invalid Resource' });
+    return NextResponse.json({
+      status: 500,
+      title: 'Internal Server Error',
+      description:
+        'We encountered an unexpected issue on our end. Please try again later or contact support if the problem persists.',
+    });
   }
 }

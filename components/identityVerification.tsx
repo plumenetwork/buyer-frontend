@@ -1,22 +1,24 @@
+'use client';
+
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useState, useRef } from 'react';
+import { useToast } from '@/components/ui/use-toast';
 
 export default function IdentityVerification({
   setTabs,
 }: {
   setTabs: React.Dispatch<React.SetStateAction<number>>;
 }) {
-  const [status, setStatus] = useState<number | null>(null);
-  const [message, setMessage] = useState<string>('');
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
-
+  const { toast } = useToast();
   const inputRef = useRef<HTMLInputElement>(null);
+
   const subscribeUser = async (e: any) => {
     e.preventDefault();
     setButtonDisabled(true);
     if (inputRef.current) {
-      const response = await fetch('/api/newsletter', {
+      const response = await fetch('/api/subscribe', {
         body: JSON.stringify({
           email: inputRef.current.value,
         }),
@@ -29,27 +31,36 @@ export default function IdentityVerification({
       });
       const data = await response.json();
       if (data.status >= 400) {
-        setStatus(data.status);
         if (data.title === 'Member Exists') {
-          setMessage('You are an existing member');
-        } else if (data.title === 'Invalid Resource') {
-          setMessage('Invalid email address');
+          toast({
+            variant: 'fail',
+            title: data.title,
+            description: 'You are an existing member',
+          });
+        } else if (data.title === 'Invalid Email Address') {
+          toast({
+            variant: 'fail',
+            title: data.title,
+            description: data.description,
+          });
+        } else if (data.title === 'Internal Server Error') {
+          toast({
+            variant: 'fail',
+            title: data.title,
+            description: data.description,
+          });
         }
       } else {
-        setStatus(201);
-        //setComponent
         setTabs(1);
-        setMessage('Thank you for subscribing');
       }
 
       setTimeout(() => {
-        setMessage('');
         setButtonDisabled(false);
       }, 2000);
     }
   };
   return (
-    <div className='md:px-30 flex w-4/6 flex-col items-center bg-white py-52 lg:px-52 2xl:px-80  2xl:py-64'>
+    <div className='flex w-[575px] flex-col items-center bg-white'>
       <h1 className='m-6 text-3xl font-semibold text-[#1E1E24]'>
         Identity Verification
       </h1>
@@ -65,15 +76,6 @@ export default function IdentityVerification({
         placeholder='example@email.com'
         autoCorrect='off'
       />
-      {message && (
-        <p
-          className={`${
-            status !== 201 ? 'text-red-500' : 'text-green-500'
-          } pt-4 `}
-        >
-          {message}
-        </p>
-      )}
       <Button
         disabled={buttonDisabled}
         className='my-5 aspect-[10/1] w-full disabled:opacity-50'

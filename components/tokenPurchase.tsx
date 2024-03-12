@@ -8,6 +8,7 @@ import ClipLoader from 'react-spinners/ClipLoader';
 import { plume } from '../lib/plumeChain';
 import { useContractWrite, usePrepareContractWrite } from 'wagmi';
 import { useWallets } from '@privy-io/react-auth';
+import { useToast } from '@/components/ui/use-toast';
 export default function TokenPurchaseComponent({
   setTabs,
   setTransactionLink,
@@ -20,6 +21,7 @@ export default function TokenPurchaseComponent({
   const [remainingTime, setRemainingTime] = useState(0);
   const [TestnetToken, setTestnetToken] = useState(false);
   const { wallets } = useWallets();
+  const { toast } = useToast();
   const { config } = usePrepareContractWrite({
     address: process.env.NEXT_PUBLIC_MINT_CONTRACT_ADDRESS as `0x${string}`,
     abi: abi,
@@ -50,8 +52,8 @@ export default function TokenPurchaseComponent({
   };
 
   const getTestnetToken = async (e: any) => {
-    setTestnetToken(true);
     e.preventDefault();
+    setTestnetToken(true);
     let address = '';
     if (wallets && wallets[0]) {
       address = wallets[0].address;
@@ -65,20 +67,33 @@ export default function TokenPurchaseComponent({
         walletAddress: address,
       }),
     });
-    if (response) {
+    const data = await response.json();
+    if (data.status < 400) {
+      toast({
+        variant: 'pass',
+        title: data.title,
+        description: data.description,
+      });
       setButtonDisabled(true);
       setTestnetToken(false);
+
       setRemainingTime(600);
       setInterval(() => {
         setRemainingTime((time) => {
           return time - 1;
         });
       }, 1000);
+    } else {
+      toast({
+        variant: 'fail',
+        title: data.title,
+        description: data.description,
+      });
     }
   };
 
   return (
-    <div className='md:px-30 flex w-4/6 flex-col items-center bg-white px-52 py-52 lg:px-52 2xl:px-80  2xl:py-64'>
+    <div className='flex w-[575px] flex-col items-center bg-white'>
       <h1 className='text-3xl font-semibold leading-9'>Token Purchase</h1>
 
       <h3 className='my-4 px-16 text-center text-base font-normal leading-6 text-[#374151]'>
@@ -103,7 +118,7 @@ export default function TokenPurchaseComponent({
       </Button>
       <Button
         onClick={getTestnetToken}
-        className={`aspect-[12/1] w-full text-base hover:bg-[#EBF5FF] hover:text-[#A3A3A3] disabled:cursor-not-allowed disabled:bg-[#EBF5FF] disabled:text-[#A3A3A3] ${TestnetToken ? 'bg-[#47a3ff]' : 'bg-true-blue'}`}
+        className={`aspect-[12/1] w-full text-base hover:bg-[#EBF5FF] hover:text-[#A3A3A3] disabled:cursor-not-allowed disabled:bg-[#EBF5FF] disabled:text-[rgb(163,163,163)] ${TestnetToken ? 'bg-[#47a3ff]' : 'bg-true-blue'}`}
         disabled={buttonDisabled}
       >
         {buttonDisabled ? (
