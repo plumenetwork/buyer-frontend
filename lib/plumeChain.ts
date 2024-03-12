@@ -19,4 +19,5 @@ export const plume = {
       url: 'https://plume-testnet.explorer.caldera.xyz',
     },
   },
+  testnet: true,
 } as const satisfies Chain;
