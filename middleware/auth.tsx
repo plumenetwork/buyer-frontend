@@ -1,3 +1,5 @@
+'use client';
+
 import { usePrivy } from '@privy-io/react-auth';
 import { useAccount } from 'wagmi';
 import { useRouter } from 'next/navigation';
