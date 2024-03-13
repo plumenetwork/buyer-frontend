@@ -1,6 +1,7 @@
-import { Chain } from 'wagmi';
+import { defineChain } from "viem";
+import { Chain } from "wagmi";
 
-export const plume = {
+export const plume = defineChain({
   id: 161221135,
   name: 'Plume',
   network: 'Plume Testnet',
@@ -20,4 +21,4 @@ export const plume = {
     },
   },
   testnet: true,
-} as const satisfies Chain;
+}) satisfies Chain;

@@ -1,8 +1,9 @@
 'use client';
 
-import * as React from 'react';
+import { plume } from '@/lib/plumeChain';
 import { PrivyProvider } from '@privy-io/react-auth';
 import { useRouter } from 'next/navigation';
+import * as React from 'react';
 
 export default function PrivyProviders({
   children,
@@ -21,6 +22,8 @@ export default function PrivyProviders({
           showWalletLoginFirst: false,
           logo: '/plume-logo.svg',
         },
+        defaultChain: plume,
+        supportedChains: [plume],
         loginMethods: [
           'wallet',
           'google',
