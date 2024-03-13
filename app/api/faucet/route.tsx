@@ -38,7 +38,7 @@ export async function POST(req: Request) {
         status: 400,
         title: 'Contract Call Exception',
         description:
-          'The transaction failed due to a revert or require failure in the smart contract.',
+          'The transaction failed because an assertion failed in the smart contract.',
       });
     } else if (error.code === 'INSUFFICIENT_FUNDS') {
       return NextResponse.json({

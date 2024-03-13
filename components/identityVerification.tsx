@@ -30,41 +30,25 @@ export default function IdentityVerification({
         method: 'POST',
       });
       const data = await response.json();
+
       if (data.status >= 400) {
-        if (data.title === 'Member Exists') {
-          toast({
-            variant: 'fail',
-            title: data.title,
-            description: 'You are an existing member',
-          });
-        } else if (data.title === 'Invalid Email Address') {
-          toast({
-            variant: 'fail',
-            title: data.title,
-            description: data.description,
-          });
-        } else if (data.title === 'Internal Server Error') {
-          toast({
-            variant: 'fail',
-            title: data.title,
-            description: data.description,
-          });
-        }
+        toast({
+          variant: 'fail',
+          title: data.title,
+          description: 'You are an existing member',
+        });
       } else {
         setTabs(1);
       }
-
-      setTimeout(() => {
-        setButtonDisabled(false);
-      }, 2000);
+      setButtonDisabled(false);
     }
   };
   return (
     <div className='flex w-[575px] flex-col items-center bg-white'>
-      <h1 className='m-6 text-3xl font-semibold text-[#1E1E24]'>
+      <h1 className='m-6 text-3xl font-semibold text-dark-blue'>
         Identity Verification
       </h1>
-      <h3 className='mb-8 text-center text-base font-normal leading-6 text-[#374151]'>
+      <h3 className='mb-8 text-center text-base font-normal leading-6 text-gray-700'>
         Please enter your email to continue. You will be notified when the real
         asset launches to be first in line to purchase it.
       </h3>

@@ -16,7 +16,7 @@ export async function POST(req: Request) {
         status: 400,
         title: 'Invalid Email Address',
         description:
-          'Please provide a valid email address. (e.g., user@example.com)',
+          'Please provide a valid email address. e.g. "user@example.com".',
       });
     }
 
@@ -48,6 +48,9 @@ export async function POST(req: Request) {
     });
     const received = await response.json();
 
+    if (received.title == 'Member Exists') {
+      received.description = 'You are an existing member';
+    }
     return NextResponse.json(received);
   } catch (e) {
     return NextResponse.json({
