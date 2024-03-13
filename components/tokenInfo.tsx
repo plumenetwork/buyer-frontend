@@ -7,8 +7,8 @@ export default function TokenInfo() {
       <div className='my-3 flex w-full flex-row items-center justify-between'>
         <div className='flex flex-row items-center'>
           <Image
-            src='/NFT-image.png'
-            alt='NFT Image'
+            src={process.env.NEXT_PUBLIC_COMMEMORATIVE_TOKEN_IMAGE_URL as string}
+            alt={`${process.env.NEXT_PUBLIC_COMMEMORATIVE_TOKEN_NAME} Commemorative Token Image`}
             width={60}
             height={80}
             className='mr-2 rounded'
