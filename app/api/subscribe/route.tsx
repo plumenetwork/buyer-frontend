@@ -48,7 +48,7 @@ export async function POST(req: Request) {
     });
     const received = await response.json();
 
-    if (received.title == 'Member Exists') {
+    if (received.title === 'Member Exists') {
       received.description = 'You are an existing member';
     }
     return NextResponse.json(received);

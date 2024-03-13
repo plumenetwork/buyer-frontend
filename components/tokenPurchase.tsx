@@ -9,6 +9,7 @@ import { plume } from '../lib/plumeChain';
 import { useContractWrite, usePrepareContractWrite } from 'wagmi';
 import { useWallets } from '@privy-io/react-auth';
 import { useToast } from '@/components/ui/use-toast';
+import Image from 'next/image';
 export default function TokenPurchaseComponent({
   setTabs,
   setTransactionLink,
@@ -45,7 +46,6 @@ export default function TokenPurchaseComponent({
     setIsLoader(true);
     try {
       let tx = write && write();
-      console.log(tx);
     } catch (error) {
       console.error('Error minting token', error);
     }
@@ -72,15 +72,42 @@ export default function TokenPurchaseComponent({
       toast({
         variant: 'pass',
         title: data.title,
-        description: data.description,
+        description: (
+          <>
+            {data.description}
+            <a
+              target='_blank'
+              href={data.hash}
+              className='flex flex-row'
+              rel='noopener noreferrer'
+            >
+              <span className='text-sm font-medium text-link-blue'>
+                Link to the Explorer
+              </span>
+              <Image
+                src='/link-blue-icon.svg'
+                alt='Link Icon'
+                width={18}
+                height={18}
+                className='pl-0.5'
+              />
+            </a>
+          </>
+        ),
       });
       setButtonDisabled(true);
       setTestnetToken(false);
 
       setRemainingTime(600);
-      setInterval(() => {
+
+      const interval = setInterval(() => {
         setRemainingTime((time) => {
-          return time - 1;
+          if (time <= 1) {
+            clearInterval(interval);
+            return 0;
+          } else {
+            return time - 1;
+          }
         });
       }, 1000);
     } else {
@@ -89,6 +116,7 @@ export default function TokenPurchaseComponent({
         title: data.title,
         description: data.description,
       });
+      setTestnetToken(false);
     }
   };
 
@@ -96,16 +124,16 @@ export default function TokenPurchaseComponent({
     <div className='flex w-[575px] flex-col items-center bg-white'>
       <h1 className='text-3xl font-semibold leading-9'>Token Purchase</h1>
 
-      <h3 className='my-4 px-16 text-center text-base font-normal leading-6 text-[#374151]'>
+      <h3 className='my-4 px-16 text-center text-base font-normal leading-6 text-gray-700'>
         Review details of your token before making the purchase.
       </h3>
-      <div className='self-start text-xl font-semibold leading-8 text-[#1E1E24]'>
+      <div className='self-start text-xl font-semibold leading-8 text-dark-blue'>
         Item Overview
       </div>
       <TokenInfo />
       <Button
         onClick={mintNft}
-        className='my-3 aspect-[12/1] w-full text-base hover:bg-[#EBF5FF] hover:text-[#A3A3A3] disabled:cursor-not-allowed disabled:bg-[#EBF5FF]'
+        className='my-3 aspect-[12/1] w-full text-base hover:bg-hover-blue hover:text-neutral-400 disabled:cursor-not-allowed disabled:bg-hover-blue'
         disabled={isLoader}
       >
         {isLoader ? (
@@ -118,7 +146,7 @@ export default function TokenPurchaseComponent({
       </Button>
       <Button
         onClick={getTestnetToken}
-        className={`aspect-[12/1] w-full text-base hover:bg-[#EBF5FF] hover:text-[#A3A3A3] disabled:cursor-not-allowed disabled:bg-[#EBF5FF] disabled:text-[rgb(163,163,163)] ${TestnetToken ? 'bg-[#47a3ff]' : 'bg-true-blue'}`}
+        className={`aspect-[12/1] w-full text-base hover:bg-hover-blue hover:text-neutral-400 disabled:cursor-not-allowed disabled:bg-hover-blue disabled:text-[rgb(163,163,163)] ${TestnetToken ? 'bg-hover-bg-blue' : 'bg-true-blue'}`}
         disabled={buttonDisabled}
       >
         {buttonDisabled ? (
@@ -130,7 +158,7 @@ export default function TokenPurchaseComponent({
         )}
       </Button>
 
-      <p className='m-4 px-10 text-center text-xs font-normal text-[#737373]'>
+      <p className='m-4 px-10 text-center text-xs font-normal text-neutral-500'>
         You are minting a commemorative token that holds no economic value.
         These tokens do not represent real-world assets, cryptocurrency, fiat,
         or any other store of value. They are merely symbolic and serve as proof

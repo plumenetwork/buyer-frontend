@@ -35,9 +35,15 @@ function TokenPurchase() {
   return (
     <>
       <NavBar />
-      <div className={`flex h-screen w-full ${inter.className}`}>
-        <StepperBar tabs={tabs} />
-        {getStepComponent(tabs)}
+      <div
+        className={`flex h-screen w-screen items-center justify-center ${inter.className}`}
+      >
+        <div className='hidden h-full w-1/3 md:flex'>
+          <StepperBar tabs={tabs} />
+        </div>
+        <div className='flex h-full w-2/3 items-center justify-center'>
+          {getStepComponent(tabs)}
+        </div>
       </div>
     </>
   );

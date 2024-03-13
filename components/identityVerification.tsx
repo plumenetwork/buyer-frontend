@@ -67,7 +67,7 @@ export default function IdentityVerification({
       >
         Continue
       </Button>
-      <p className='mt-5 text-center text-xs font-normal text-[#737373]'>
+      <p className='mt-5 text-center text-xs font-normal text-neutral-500'>
         To purchase this real-world asset on mainnet, you will have to undergo a
         Know Your Customer (KYC) process with an external provider. This will
         involve sending personal information like your name, date of birth, and

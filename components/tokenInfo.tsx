@@ -13,17 +13,17 @@ export default function TokenInfo() {
             height={80}
             className='mr-2 rounded'
           />
-          <div className='text-sm font-semibold leading-5 text-[#424242]'>
+          <div className='text-sm font-semibold leading-5 text-dark-red'>
             1x Commemorative NFT
           </div>
         </div>
-        <div className='text-sm font-medium text-[#737373]'>$0 (USDC)</div>
+        <div className='text-sm font-medium text-neutral-500'>$0 (USDC)</div>
       </div>
-      <div className='mt-2 self-start text-xs font-medium uppercase text-[#737373]'>
+      <div className='mt-2 self-start text-xs font-medium uppercase text-neutral-500'>
         Materials
       </div>
       <Button
-        className='my-3 flex w-full justify-between bg-[#FAFAFA] text-sm font-medium leading-4 text-[#424242] hover:bg-[#efecec]'
+        className='my-3 flex w-full justify-between bg-zinc-50 text-sm font-medium leading-4 text-dark-red hover:bg-neutral-50'
         onClick={() => {
           window.open(`${process.env.NEXT_PUBLIC_ETH_SIGNIN_LINK}`, '_blank');
         }}
