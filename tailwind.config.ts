@@ -20,6 +20,15 @@ const config = {
     extend: {
       colors: {
         'true-blue': '#007DFC',
+        'dark-blue': '#1E1E24',
+        'hover-blue': '#EBF5FF',
+        'dark-red': '#424242',
+        'link-blue': '#1C64F2',
+        'pill-green': '#31C48D',
+        'toast-green': '#0E9F6E',
+        'toast-red': '#E02424',
+        'dropdown-blue': '#3F83F8',
+        'hover-bg-blue': '#47a3ff',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',

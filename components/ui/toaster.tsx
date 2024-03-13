@@ -18,22 +18,22 @@ export function Toaster() {
     <ToastProvider>
       {toasts.map(function ({ id, title, description, action, ...props }) {
         return (
-          <Toast key={id} {...props}>
+          <Toast duration={4000} key={id} {...props}>
             <div
-              className={`relative w-[400px] ${props.variant === 'pass' ? 'rounded-xl border border-[#0E9F6E]' : props.variant === 'fail' ? 'rounded-xl border border-[#F05252]' : 'rounded-xl border border-[#3d55b8]'} w-full bg-white p-1`}
+              className={`relative w-[400px] ${props.variant === 'pass' ? 'rounded-xl border border-toast-green' : props.variant === 'fail' ? 'rounded-xl border border-toast-red' : 'rounded-xl border border-blue-500'} w-full bg-white p-1`}
             >
               <div className='flex flex-row'>
                 <ToastStatusIcon className='' icon={props.variant} />
-                <div className='w-[300px] py-2 pl-2'>
+                <div className='flex w-[300px] flex-col justify-center py-2 pl-2'>
                   {title && (
                     <ToastTitle
-                      className={`mb-2 text-sm font-semibold leading-5 ${props.variant === 'pass' ? 'text-[#0E9F6E]' : props.variant === 'fail' ? 'text-[#E02424]' : 'text-[#3d55b8]'}`}
+                      className={`text-sm font-semibold leading-5 ${props.variant === 'pass' ? 'text-toast-green' : props.variant === 'fail' ? 'text-toast-red' : 'text-blue-500'}`}
                     >
                       {title}
                     </ToastTitle>
                   )}
                   {description && (
-                    <ToastDescription className='text-sm font-normal text-[#525252]'>
+                    <ToastDescription className='text-sm font-normal text-neutral-600'>
                       {description}
                     </ToastDescription>
                   )}

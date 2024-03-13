@@ -1,3 +1,5 @@
+'use client';
+
 import Image from 'next/image';
 import { useState } from 'react';
 import { Button } from './ui/button';
@@ -20,14 +22,14 @@ export default function DocumentSignin({
     }
   };
   return (
-    <div className='md:px-30 flex w-4/6 flex-col items-center bg-white px-52 py-52 lg:px-52 2xl:px-80  2xl:py-64'>
-      <h1 className='mb-3 text-3xl font-semibold leading-9 text-[#1E1E24]'>
+    <div className='flex w-[575px] flex-col items-center bg-white'>
+      <h1 className='mb-3 text-3xl font-semibold leading-9 text-dark-blue'>
         Documents to Sign
       </h1>
-      <h3 className='my-3 text-base font-normal leading-6 text-[#374151]'>
+      <h3 className='my-3 text-base font-normal leading-6 text-gray-700'>
         Please read the documents carefully and sign them.
       </h3>
-      <div className='flex w-full flex-row items-center justify-between py-12 text-sm leading-4 text-[#424242]'>
+      <div className='flex w-full flex-row items-center justify-between py-12 text-sm leading-4 text-dark-red'>
         <div className='flex flex-row items-center'>
           <Image
             src='./document-icon.svg'

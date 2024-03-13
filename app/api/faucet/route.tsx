@@ -25,12 +25,15 @@ export async function POST(req: Request) {
 
     const contract = new ethers.Contract(ContractAddress, abi, wallet);
     const faucet = await contract.sendETH(walletAddress);
-    await faucet.wait();
+    const response = await faucet.wait();
+    const transactionHash =
+      'https://plume-testnet.explorer.caldera.xyz/tx/' + response.hash;
     return NextResponse.json({
       status: 200,
       title: 'Transaction Successful',
       description:
         'Your transaction has been successfully processed and recorded on the blockchain.',
+      hash: transactionHash,
     });
   } catch (error: any) {
     if (error.code === 'CALL_EXCEPTION') {
