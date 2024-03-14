@@ -6,8 +6,9 @@ import { abi } from '../lib/MintABI';
 import { useEffect, useState } from 'react';
 import ClipLoader from 'react-spinners/ClipLoader';
 import { plume } from '../lib/plumeChain';
-import { useContractWrite, usePrepareContractWrite } from 'wagmi';
-import { useWallets } from '@privy-io/react-auth';
+import { useAccount, useContractWrite, usePrepareContractWrite } from 'wagmi';
+import { encodeFunctionData } from 'viem';
+import { usePrivy, useWallets } from '@privy-io/react-auth';
 import { useToast } from '@/components/ui/use-toast';
 import Image from 'next/image';
 export default function TokenPurchaseComponent({
@@ -17,19 +18,24 @@ export default function TokenPurchaseComponent({
   setTabs: React.Dispatch<React.SetStateAction<number>>;
   setTransactionLink: React.Dispatch<React.SetStateAction<string>>;
 }) {
+  // Set State
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [isLoader, setIsLoader] = useState(false);
   const [remainingTime, setRemainingTime] = useState(0);
   const [TestnetToken, setTestnetToken] = useState(false);
-  const { wallets } = useWallets();
+  const [privyTransactionHash, setPrivyTransactionHash] = useState('');
+  const { address: userAddress, isConnected } = useAccount();
   const { toast } = useToast();
+  const { ready: privyWalletReady, wallets: privyWallet } = useWallets();
+  const { ready: privyReady, authenticated: privyAuthenticated } = usePrivy();
+
+  // Preparing contract for minting token for wallets other than privy...
   const { config } = usePrepareContractWrite({
     address: process.env.NEXT_PUBLIC_MINT_CONTRACT_ADDRESS as `0x${string}`,
     abi: abi,
     functionName: 'mint',
     chainId: plume.id,
   });
-
   const { data, write, isError } = useContractWrite(config);
 
   useEffect(() => {
@@ -41,23 +47,76 @@ export default function TokenPurchaseComponent({
       setIsLoader(false);
     }
   }, [data, isError]);
+  //--------------------------------------------------------------------------
+
+  // For privy Integration
+  const privyData = encodeFunctionData({
+    abi: abi,
+    functionName: 'mint',
+  });
+
+  const transactionRequest = {
+    to: process.env.NEXT_PUBLIC_MINT_CONTRACT_ADDRESS,
+    from: `${privyWallet && privyWallet.length ? privyWallet[0].address : undefined}`,
+    data: privyData,
+  };
+
+  useEffect(() => {
+    if (privyTransactionHash !== undefined && privyTransactionHash !== '') {
+      setTransactionLink(privyTransactionHash);
+      setTabs(3);
+      setIsLoader(false);
+    }
+  }, [privyTransactionHash]);
+
+  //--------------------------------------------------------------------------
+
+  // Actual code for minting NFT, which can be used by privy as well as rainbowkit
 
   const mintNft = async () => {
     setIsLoader(true);
+
     try {
-      let tx = write && write();
+      if (!privyAuthenticated) {
+        let tx = write && write();
+        console.log(tx);
+      } else if (privyWalletReady && privyWallet) {
+        const wallet = privyWallet[0];
+        await wallet.switchChain(161221135);
+        console.log('privywallet', wallet);
+        console.log('privyData', privyData);
+        const provider = await wallet.getEthereumProvider();
+        console.log('Provider', provider);
+        const transactionHash = await provider.request({
+          method: 'eth_sendTransaction',
+          params: [transactionRequest],
+        });
+        console.log('transactionHash', transactionHash);
+        setPrivyTransactionHash(transactionHash);
+      } else {
+        throw new Error('wallet is not present');
+      }
     } catch (error) {
+      setIsLoader(false);
       console.error('Error minting token', error);
     }
   };
+
+  //--------------------------------------------------------------------------
+
+  // Actual code for getting testnet tokens, will work irrespective of chain and wallet
 
   const getTestnetToken = async (e: any) => {
     e.preventDefault();
     setTestnetToken(true);
     let address = '';
-    if (wallets && wallets[0]) {
-      address = wallets[0].address;
+    if (privyReady && privyAuthenticated && privyWallet && privyWallet[0]) {
+      address = privyWallet[0].address;
     }
+    if (isConnected && userAddress) {
+      address = userAddress;
+    }
+
     let response = await fetch('/api/faucet', {
       headers: {
         'Content-Type': 'application/json',

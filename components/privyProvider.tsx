@@ -1,9 +1,9 @@
 'use client';
 
-import { plume } from '@/lib/plumeChain';
+import * as React from 'react';
 import { PrivyProvider } from '@privy-io/react-auth';
 import { useRouter } from 'next/navigation';
-import * as React from 'react';
+import { plume } from '@/lib/plumeChain';
 
 export default function PrivyProviders({
   children,
