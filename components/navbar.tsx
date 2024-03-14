@@ -3,7 +3,8 @@
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
-import { useAccount, useDisconnect } from 'wagmi';
+import { useChainModal } from '@rainbow-me/rainbowkit';
+import { useAccount, useDisconnect, useNetwork } from 'wagmi';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,9 +14,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import makeBlockie from 'ethereum-blockies-base64';
-import { useEffect, useState } from 'react';
-import { toast } from 'sonner';
-import { Toaster } from '@/components/ui/sonner';
+import { useLayoutEffect, useState, useEffect } from 'react';
+import { useToast } from '@/components/ui/use-toast';
 
 function shortenAddress(address: string) {
   if (!address || address.length < 10) return address;
@@ -23,105 +23,136 @@ function shortenAddress(address: string) {
 }
 
 function customizeAddress(address: string) {
-  if (!address || address.length < 13) return address;
-  return `${address.slice(0, 15)}...${address.slice(-2)}`;
+  if (!address || address.length < 18) return address;
+  return `${address.slice(0, 18)}...`;
 }
 
 export default function NavBar() {
   const router = useRouter();
   const { ready, authenticated, logout } = usePrivy();
   const { wallets } = useWallets();
-  const { isConnected } = useAccount();
+  const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
+  const { chain } = useNetwork();
   const [blockie, setBlockie] = useState('');
   const [userAddress, setUserAddress] = useState('');
+  const { openChainModal, chainModalOpen } = useChainModal();
+  const [isDropDownOpen, setIsDropDownOpen] = useState(false);
+  const { toast } = useToast();
 
-  const getAddressAndGenerateBlockie = () => {
-    let address = '';
-    if (wallets && wallets[0]) {
-      address = wallets[0].address;
-    }
-    if (address !== '') {
-      setUserAddress(address);
-      const generatedBlockie = makeBlockie(address);
-      setBlockie(generatedBlockie);
-    }
+  const getAddressAndGenerateBlockie = (userAddress: any) => {
+    setUserAddress(userAddress);
+    const generatedBlockie = makeBlockie(userAddress);
+    setBlockie(generatedBlockie);
   };
 
-  useEffect(() => {
-    getAddressAndGenerateBlockie();
-  }, [wallets]);
-
-  const logoutHandler = async () => {
-    if (ready && authenticated) {
-      await logout();
+  useLayoutEffect(() => {
+    let userAddress = '';
+    if (ready && authenticated && wallets && wallets[0]) {
+      userAddress = wallets[0].address;
+      getAddressAndGenerateBlockie(userAddress);
     }
+  }, [wallets, ready, authenticated]);
 
+  useLayoutEffect(() => {
+    let userAddress = '';
+    if (isConnected && address) {
+      userAddress = address;
+      getAddressAndGenerateBlockie(userAddress);
+    }
+  }, [address, isConnected]);
+
+  useEffect(() => {
+    if (chain?.name != 'Plume') {
+      openChainModal?.();
+    }
+  }, [chain, chainModalOpen, disconnect, openChainModal]);
+
+  const logoutHandler = () => {
+    if (ready && authenticated) {
+      logout();
+    }
     if (isConnected) {
       disconnect();
     }
     router.push('/');
   };
   return (
-    <div className='absolute right-8 top-6'>
-      <DropdownMenu>
-        <DropdownMenuTrigger className='flex items-center justify-center rounded-xl border-2 border-gray-300 p-2'>
+    <div className='absolute right-8 top-6 flex flex-row items-center justify-center'>
+      <div className='mr-3 flex flex-row items-center justify-center rounded-full bg-neutral-100 px-2.5 py-0.5 text-neutral-500'>
+        <span className='me-1 flex h-2 w-2 rounded-full bg-pill-green'></span>
+        <span className='text-xs font-medium leading-5'>Plume Testnet</span>
+      </div>
+      <DropdownMenu
+        onOpenChange={(open) => {
+          setIsDropDownOpen(open);
+        }}
+      >
+        <DropdownMenuTrigger className='flex items-center justify-center gap-2 rounded-xl p-2 data-[state=closed]:border-2 data-[state=open]:border-2 data-[state=closed]:border-neutral-200 data-[state=open]:border-dropdown-blue'>
           <div className='items-center justify-center text-sm text-white'>
             <Image
               src={blockie !== '' ? blockie : '/profile-placeholder.svg'}
-              width={32}
-              height={32}
-              className='mx-2 rounded-full'
+              width={24}
+              height={24}
+              className='rounded-full'
               alt='profile-avatar'
             />
           </div>
-          <div className='text-xm pt-1 font-semibold text-gray-700'>
-            {shortenAddress(userAddress)}
-          </div>
-          <div>
-            {
-              <Image
-                src={'/chevron-down.svg'}
-                width={20}
-                height={20}
-                className='ml-1'
-                alt='copy-icon'
-              />
-            }
+          <div className='flex flex-row items-center justify-center gap-0.5 text-sm font-semibold text-neutral-600'>
+            <div>{shortenAddress(userAddress)}</div>
+            <div>
+              {isDropDownOpen ? (
+                <Image
+                  src={'/chevron-up.svg'}
+                  width={20}
+                  height={20}
+                  alt='copy-icon'
+                />
+              ) : (
+                <Image
+                  src={'/chevron-down.svg'}
+                  width={20}
+                  height={20}
+                  alt='copy-icon'
+                />
+              )}
+            </div>
           </div>
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuLabel className='pb-0 text-xs text-gray-400'>
-            WALLET ID
-          </DropdownMenuLabel>
-          <DropdownMenuLabel className='pt-1 text-base font-medium text-gray-700'>
-            <button
-              onClick={() => {
-                toast('Copied to Clipboard', {
-                  action: {
-                    label: 'X',
-                    onClick: () => console.log('Undo'),
-                  },
-                });
-                navigator.clipboard.writeText(userAddress);
-              }}
-              className='flex items-center'
-            >
-              {customizeAddress(userAddress)}
-              <Image
-                src={'/copy-icon.svg'}
-                width={16}
-                height={16}
-                className='ml-2'
-                alt='copy-icon'
-              />
-            </button>
-          </DropdownMenuLabel>
+        <DropdownMenuContent
+          align='end'
+          className='w-[240px] rounded-md p-0 shadow-lg'
+        >
+          <div className='px-4 py-3'>
+            <DropdownMenuLabel className='m-0 p-0 text-xs font-medium leading-[18px] text-neutral-400'>
+              WALLET ID
+            </DropdownMenuLabel>
+            <DropdownMenuLabel className='m-0 p-0 text-sm font-medium text-dark-red'>
+              <button
+                onClick={() => {
+                  toast({
+                    variant: 'pass',
+                    title: 'Wallet address successfully copied.',
+                  });
+                  navigator.clipboard.writeText(userAddress);
+                }}
+                className='flex flex-row items-center justify-between gap-2'
+              >
+                <div>{customizeAddress(userAddress)}</div>
+                <Image
+                  src={'/copy-icon.svg'}
+                  width={16}
+                  height={16}
+                  alt='copy-icon'
+                />
+              </button>
+            </DropdownMenuLabel>
+          </div>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
+          <DropdownMenuItem className='py-1'>
             <button
               onClick={logoutHandler}
-              className='flex items-center font-medium text-gray-700 '
+              className='flex w-full items-center justify-start rounded-sm px-2 py-2 text-sm font-medium text-dark-red '
             >
               <Image
                 src={'/logout.svg'}
@@ -135,7 +166,6 @@ export default function NavBar() {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <Toaster />
     </div>
   );
 }

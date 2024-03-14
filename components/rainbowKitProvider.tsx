@@ -3,9 +3,11 @@
 import '@rainbow-me/rainbowkit/styles.css';
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import { configureChains, createConfig, WagmiConfig } from 'wagmi';
-import { bsc, mainnet } from 'wagmi/chains';
-import { publicProvider } from 'wagmi/providers/public';
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
+import { plume } from '../lib/plumeChain';
+import { mainnet } from 'wagmi/chains';
 import binanceWallet from '@binance/w3w-rainbow-connector';
+import { publicProvider } from 'wagmi/providers/public';
 import {
   bitgetWallet,
   coinbaseWallet,
@@ -20,9 +22,18 @@ import {
 } from '@rainbow-me/rainbowkit/wallets';
 import { connectorsForWallets } from '@rainbow-me/rainbowkit';
 
+// Mainnet is present, because It helps plume Testnet to connect with coinbase wallet.
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [bsc, mainnet],
-  [publicProvider()]
+  [mainnet, plume],
+  [
+    publicProvider(),
+    jsonRpcProvider({
+      rpc: () => ({
+        http: 'https://plume-testnet.rpc.caldera.xyz/http',
+        webSocket: 'wss://plume-testnet.rpc.caldera.xyz/ws',
+      }),
+    }),
+  ]
 );
 
 const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID as string;
@@ -60,7 +71,9 @@ export default function RainbowKitProviders({
 }) {
   return (
     <WagmiConfig config={wagmiConfig}>
-      <RainbowKitProvider chains={chains}>{children}</RainbowKitProvider>
+      <RainbowKitProvider chains={chains} initialChain={161221135}>
+        {children}
+      </RainbowKitProvider>
     </WagmiConfig>
   );
 }

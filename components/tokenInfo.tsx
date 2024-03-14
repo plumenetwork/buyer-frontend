@@ -7,26 +7,25 @@ export default function TokenInfo() {
       <div className='my-3 flex w-full flex-row items-center justify-between'>
         <div className='flex flex-row items-center'>
           <Image
-            src='/NFT-image.png'
-            alt='NFT Image'
+            src={`${process.env.NEXT_PUBLIC_COMMEMORATIVE_TOKEN_IMAGE_URL}`}
+            alt={`${process.env.NEXT_PUBLIC_COMMEMORATIVE_TOKEN_NAME} Commemorative Token Image`}
             width={60}
             height={80}
             className='mr-2 rounded'
           />
-          <div className='text-sm font-semibold'>1x Tokenized Share</div>
+          <div className='text-sm font-semibold leading-5 text-dark-red'>
+            1x Commemorative NFT
+          </div>
         </div>
-        <div className='text-sm font-medium text-gray-500'>$5,000 (USDC)</div>
+        <div className='text-sm font-medium text-neutral-500'>$0 (USDC)</div>
       </div>
-      <div className='mt-2 self-start text-xs font-medium uppercase text-gray-500'>
-        Material
+      <div className='mt-2 self-start text-xs font-medium uppercase text-neutral-500'>
+        Materials
       </div>
       <Button
-        className='my-3 flex w-full justify-between bg-[#FAFAFA] text-black hover:bg-[#efecec]'
+        className='my-3 flex w-full justify-between bg-zinc-50 text-sm font-medium leading-4 text-dark-red hover:bg-neutral-50'
         onClick={() => {
-          window.open(
-            'https://app.ethsign.xyz/contract/ES-V-vg3AVOp0Y1wjGok38861m',
-            '_blank'
-          );
+          window.open(`${process.env.NEXT_PUBLIC_ETHSIGN_LINK}`, '_blank');
         }}
       >
         Private Sample Asset Document
