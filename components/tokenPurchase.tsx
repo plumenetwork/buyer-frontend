@@ -4,7 +4,6 @@ import TokenInfo from './tokenInfo';
 import { Button } from './ui/button';
 import { abi } from '../lib/MintABI';
 import { useEffect, useState } from 'react';
-import ClipLoader from 'react-spinners/ClipLoader';
 import { plume } from '../lib/plumeChain';
 import { useAccount, useContractWrite, usePrepareContractWrite } from 'wagmi';
 import { encodeFunctionData } from 'viem';
@@ -175,7 +174,7 @@ export default function TokenPurchaseComponent({
   };
 
   return (
-    <div className='flex w-[575px] flex-col items-center bg-white'>
+    <div className='flex w-[575px] max-w-[640px] flex-col items-center bg-white'>
       <h1 className='text-3xl font-semibold leading-9'>Token Purchase</h1>
 
       <h3 className='my-4 px-16 text-center text-base font-normal leading-6 text-gray-700'>
@@ -192,7 +191,7 @@ export default function TokenPurchaseComponent({
       >
         {isLoader ? (
           <>
-            <ClipLoader color='#027DFC' loading={isLoader} size={30} />
+            <div className='motion-reduce:animate-[spin_1.5s_linear_infinite inline-block h-5 w-5 animate-spin rounded-full border-2 border-solid border-dropdown-blue border-t-transparent align-[-0.125em]' />
           </>
         ) : (
           <>Purchase</>

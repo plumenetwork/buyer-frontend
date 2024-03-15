@@ -81,6 +81,7 @@ const config = {
       },
       content: {
         tick: 'url("../public/tick.svg")',
+        dot: 'url("../public/dot.svg")',
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',

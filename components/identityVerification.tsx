@@ -44,7 +44,7 @@ export default function IdentityVerification({
     }
   };
   return (
-    <div className='flex w-[575px] flex-col items-center bg-white'>
+    <div className='flex w-[575px] max-w-[640px] flex-col items-center bg-white'>
       <h1 className='m-6 text-3xl font-semibold text-dark-blue'>
         Identity Verification
       </h1>
