@@ -16,6 +16,7 @@ import {
 import makeBlockie from 'ethereum-blockies-base64';
 import { useLayoutEffect, useState, useEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
+import { plume } from '@/lib/plumeChain';
 
 function shortenAddress(address: string) {
   if (!address || address.length < 10) return address;
@@ -52,6 +53,12 @@ export default function NavBar() {
       userAddress = wallets[0].address;
       getAddressAndGenerateBlockie(userAddress);
     }
+
+    if (wallets[0]?.chainId != plume.id.toString()) {
+      (async () => {
+        await wallets[0].switchChain(plume.id);
+      })();
+    }
   }, [wallets, ready, authenticated]);
 
   useLayoutEffect(() => {
@@ -66,7 +73,7 @@ export default function NavBar() {
     if (chain?.name != 'Plume') {
       openChainModal?.();
     }
-  }, [chain, chainModalOpen, disconnect, openChainModal]);
+  }, [chain, chainModalOpen, disconnect, openChainModal, wallets]);
 
   const logoutHandler = () => {
     if (ready && authenticated) {
