@@ -79,19 +79,14 @@ export default function TokenPurchaseComponent({
     try {
       if (!privyAuthenticated) {
         let tx = write && write();
-        console.log(tx);
       } else if (privyWalletReady && privyWallet) {
         const wallet = privyWallet[0];
-        await wallet.switchChain(161221135);
-        console.log('privywallet', wallet);
-        console.log('privyData', privyData);
+        await wallet.switchChain(plume.id);
         const provider = await wallet.getEthereumProvider();
-        console.log('Provider', provider);
         const transactionHash = await provider.request({
           method: 'eth_sendTransaction',
           params: [transactionRequest],
         });
-        console.log('transactionHash', transactionHash);
         setPrivyTransactionHash(transactionHash);
       } else {
         throw new Error('wallet is not present');
