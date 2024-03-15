@@ -47,7 +47,7 @@ export default function NavBar() {
     setBlockie(generatedBlockie);
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     let userAddress = '';
     if (ready && authenticated && wallets && wallets[0]) {
       userAddress = wallets[0].address;
@@ -56,7 +56,7 @@ export default function NavBar() {
 
     if (wallets[0]?.chainId != plume.id.toString()) {
       (async () => {
-        await wallets[0].switchChain(plume.id);
+        await wallets[0]?.switchChain?.(plume.id);
       })();
     }
   }, [wallets, ready, authenticated]);

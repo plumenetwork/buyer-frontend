@@ -14,9 +14,8 @@ const inter = Inter({ subsets: ['latin'] });
 function TokenPurchase() {
   const [tabs, setTabs] = useState(() => {
     const savedTabs =
-      typeof window !== 'undefined'
-        ? localStorage.getItem('currentTab')
-        : undefined;
+      typeof window !== 'undefined' ? localStorage.getItem('currentTab') : 0;
+
     return savedTabs ? Number(savedTabs) : 0;
   });
 
