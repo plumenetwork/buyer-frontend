@@ -3,7 +3,7 @@ import NavBar from '@/components/navbar';
 import IdentityVerification from '@/components/identityVerification';
 import StepperBar from '@/components/stepperBar';
 import { Inter } from 'next/font/google';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import DocumentSignin from '@/components/documentSignin';
 import TokenPurchaseComponent from '@/components/tokenPurchase';
 import ThankYou from '@/components/thankYou';
@@ -12,8 +12,18 @@ import withAuth from '@/middleware/auth';
 const inter = Inter({ subsets: ['latin'] });
 
 function TokenPurchase() {
-  const [tabs, setTabs] = useState(0);
+  const [tabs, setTabs] = useState(() => {
+    const savedTabs =
+      typeof window !== 'undefined'
+        ? localStorage.getItem('currentTab')
+        : undefined;
+    return savedTabs ? Number(savedTabs) : 0;
+  });
+
   const [transactionLink, setTransactionLink] = useState('');
+  useEffect(() => {
+    localStorage.setItem('currentTab', tabs.toString());
+  }, [tabs]);
 
   const getStepComponent = (tabs: number) => {
     switch (tabs) {

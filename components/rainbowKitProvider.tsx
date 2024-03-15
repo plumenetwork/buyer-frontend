@@ -71,7 +71,7 @@ export default function RainbowKitProviders({
 }) {
   return (
     <WagmiConfig config={wagmiConfig}>
-      <RainbowKitProvider chains={chains} initialChain={161221135}>
+      <RainbowKitProvider chains={chains} initialChain={plume.id}>
         {children}
       </RainbowKitProvider>
     </WagmiConfig>

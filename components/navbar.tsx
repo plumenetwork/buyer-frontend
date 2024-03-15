@@ -73,7 +73,7 @@ export default function NavBar() {
     if (chain?.name != 'Plume') {
       openChainModal?.();
     }
-  }, [chain, chainModalOpen, disconnect, openChainModal, wallets]);
+  }, [chain, chainModalOpen, openChainModal, wallets]);
 
   const logoutHandler = () => {
     if (ready && authenticated) {
@@ -82,6 +82,7 @@ export default function NavBar() {
     if (isConnected) {
       disconnect();
     }
+    localStorage.removeItem('currentTab');
     router.push('/');
   };
   return (
