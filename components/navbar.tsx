@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import makeBlockie from 'ethereum-blockies-base64';
-import { useLayoutEffect, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { plume } from '@/lib/plumeChain';
 
@@ -37,7 +37,7 @@ export default function NavBar() {
   const { chain } = useNetwork();
   const [blockie, setBlockie] = useState('');
   const [userAddress, setUserAddress] = useState('');
-  const { openChainModal, chainModalOpen } = useChainModal();
+  const { openChainModal } = useChainModal();
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
   const { toast } = useToast();
 
@@ -54,14 +54,22 @@ export default function NavBar() {
       getAddressAndGenerateBlockie(userAddress);
     }
 
-    if (wallets[0]?.chainId != plume.id.toString()) {
+    if (ready && authenticated && wallets[0]?.chainId != plume.id.toString()) {
       (async () => {
-        await wallets[0]?.switchChain?.(plume.id);
+        try {
+          await wallets[0]?.switchChain?.(plume.id);
+        } catch {
+          toast({
+            variant: 'fail',
+            title: 'wallet address changed from Plume.',
+            description: 'Please set it back to Plume Network',
+          });
+        }
       })();
     }
   }, [wallets, ready, authenticated]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     let userAddress = '';
     if (isConnected && address) {
       userAddress = address;
@@ -70,10 +78,11 @@ export default function NavBar() {
   }, [address, isConnected]);
 
   useEffect(() => {
-    if (chain?.name != 'Plume') {
+    if (!authenticated && chain?.name != 'Plume') {
       openChainModal?.();
     }
-  }, [chain, chainModalOpen, openChainModal, wallets]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chain]);
 
   const logoutHandler = () => {
     if (ready && authenticated) {
@@ -83,6 +92,8 @@ export default function NavBar() {
       disconnect();
     }
     localStorage.removeItem('currentTab');
+    localStorage.removeItem('signed_style');
+    localStorage.removeItem('signed_message');
     router.push('/');
   };
   return (

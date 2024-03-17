@@ -21,6 +21,7 @@ export default function PrivyProviders({
           theme: '#FFFFFF',
           showWalletLoginFirst: false,
           logo: '/plume-logo.svg',
+          walletList: ['metamask'],
         },
         defaultChain: plume,
         supportedChains: [plume],

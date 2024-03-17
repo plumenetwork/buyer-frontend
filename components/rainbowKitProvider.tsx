@@ -6,19 +6,13 @@ import { configureChains, createConfig, WagmiConfig } from 'wagmi';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 import { plume } from '../lib/plumeChain';
 import { mainnet } from 'wagmi/chains';
-import binanceWallet from '@binance/w3w-rainbow-connector';
 import { publicProvider } from 'wagmi/providers/public';
 import {
   bitgetWallet,
   coinbaseWallet,
-  foxWallet,
-  trustWallet,
-  rabbyWallet,
   okxWallet,
   injectedWallet,
-  rainbowWallet,
   metaMaskWallet,
-  walletConnectWallet,
 } from '@rainbow-me/rainbowkit/wallets';
 import { connectorsForWallets } from '@rainbow-me/rainbowkit';
 
@@ -45,14 +39,8 @@ const connectors = connectorsForWallets([
       injectedWallet({ projectId, chains }),
       metaMaskWallet({ projectId, chains }),
       bitgetWallet({ projectId, chains }),
-      walletConnectWallet({ projectId, chains }),
       coinbaseWallet({ appName: projectId, chains }),
       okxWallet({ projectId, chains }),
-      rainbowWallet({ projectId, chains }),
-      foxWallet({ projectId, chains }),
-      trustWallet({ projectId, chains }),
-      rabbyWallet({ chains }),
-      binanceWallet({ chains }),
     ],
   },
 ]);

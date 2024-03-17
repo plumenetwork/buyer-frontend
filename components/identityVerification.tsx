@@ -35,7 +35,7 @@ export default function IdentityVerification({
         toast({
           variant: 'fail',
           title: data.title,
-          description: 'You are an existing member',
+          description: data.description,
         });
       } else {
         setTabs(1);

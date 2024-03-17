@@ -45,8 +45,9 @@ export default function TokenPurchaseComponent({
       }
       setIsLoader(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, isError]);
-  //--------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------------------------------------------
 
   // For privy Integration
   const privyData = encodeFunctionData({
@@ -66,17 +67,18 @@ export default function TokenPurchaseComponent({
       setTabs(3);
       setIsLoader(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [privyTransactionHash]);
 
-  //--------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------------------------------------------
 
   // Actual code for minting NFT, which can be used by privy as well as rainbowkit
-
   const mintNft = async () => {
     setIsLoader(true);
 
     try {
       if (!privyAuthenticated) {
+        // eslint-disable-next-line unused-imports/no-unused-vars
         let tx = write && write();
       } else if (privyWalletReady && privyWallet) {
         const wallet = privyWallet[0];
@@ -92,7 +94,11 @@ export default function TokenPurchaseComponent({
       }
     } catch (error) {
       setIsLoader(false);
-      console.error('Error minting token', error);
+      toast({
+        variant: 'fail',
+        title: 'Minting Failed',
+        description: 'Transaction cancelled due to internal error',
+      });
     }
   };
 
@@ -186,7 +192,7 @@ export default function TokenPurchaseComponent({
       <TokenInfo />
       <Button
         onClick={mintNft}
-        className='my-3 aspect-[12/1] w-full text-base hover:bg-hover-blue hover:text-neutral-400 disabled:cursor-not-allowed disabled:bg-hover-blue'
+        className='my-3 aspect-[12/1] w-full text-base disabled:cursor-not-allowed disabled:bg-hover-blue'
         disabled={isLoader}
       >
         {isLoader ? (
@@ -199,7 +205,7 @@ export default function TokenPurchaseComponent({
       </Button>
       <Button
         onClick={getTestnetToken}
-        className={`aspect-[12/1] w-full text-base hover:bg-hover-blue hover:text-neutral-400 disabled:cursor-not-allowed disabled:bg-hover-blue disabled:text-[rgb(163,163,163)] ${TestnetToken ? 'bg-hover-bg-blue' : 'bg-true-blue'}`}
+        className={`aspect-[12/1] w-full text-base disabled:cursor-not-allowed disabled:bg-hover-blue disabled:text-[rgb(163,163,163)] ${TestnetToken ? 'bg-hover-bg-blue' : 'bg-true-blue'}`}
         disabled={buttonDisabled}
       >
         {buttonDisabled ? (

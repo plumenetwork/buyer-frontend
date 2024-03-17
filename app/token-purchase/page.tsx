@@ -1,4 +1,5 @@
 'use client';
+
 import NavBar from '@/components/navbar';
 import IdentityVerification from '@/components/identityVerification';
 import StepperBar from '@/components/stepperBar';
@@ -8,21 +9,18 @@ import DocumentSignin from '@/components/documentSignin';
 import TokenPurchaseComponent from '@/components/tokenPurchase';
 import ThankYou from '@/components/thankYou';
 import withAuth from '@/middleware/auth';
+import useLocalStorage from '@/lib/useLocalStorage';
+import { Loader } from '@/components/loader';
 
 const inter = Inter({ subsets: ['latin'] });
 
 function TokenPurchase() {
-  const [tabs, setTabs] = useState(() => {
-    const savedTabs =
-      typeof window !== 'undefined' ? localStorage.getItem('currentTab') : 0;
-
-    return savedTabs ? Number(savedTabs) : 0;
-  });
-
   const [transactionLink, setTransactionLink] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [tabs, setTabs] = useLocalStorage('currentTab', 0);
   useEffect(() => {
-    localStorage.setItem('currentTab', tabs.toString());
-  }, [tabs]);
+    setLoading(false);
+  }, []);
 
   const getStepComponent = (tabs: number) => {
     switch (tabs) {
@@ -43,17 +41,23 @@ function TokenPurchase() {
   };
   return (
     <>
-      <NavBar />
-      <div
-        className={`flex h-screen w-screen items-center justify-center ${inter.className}`}
-      >
-        <div className='hidden h-full w-1/3 md:flex'>
-          <StepperBar tabs={tabs} />
+      {!loading ? (
+        <div>
+          <NavBar />
+          <div
+            className={`flex h-screen w-screen items-center justify-center ${inter.className}`}
+          >
+            <div className='hidden h-full w-1/3 md:flex'>
+              <StepperBar tabs={tabs} />
+            </div>
+            <div className='flex h-full w-2/3 items-center justify-center'>
+              {getStepComponent(tabs)}
+            </div>
+          </div>
         </div>
-        <div className='flex h-full w-2/3 items-center justify-center'>
-          {getStepComponent(tabs)}
-        </div>
-      </div>
+      ) : (
+        <Loader />
+      )}
     </>
   );
 }
