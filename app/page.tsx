@@ -32,6 +32,7 @@ export default function Home() {
     if ((ready && authenticated) || isConnected) {
       router.push('/token-purchase');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready, authenticated, isConnected]);
 
   const sidebarVariants = {
