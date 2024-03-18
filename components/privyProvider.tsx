@@ -20,7 +20,7 @@ export default function PrivyProviders({
           accentColor: '#6A6FF5',
           theme: '#FFFFFF',
           showWalletLoginFirst: false,
-          logo: '/plume-logo.svg',
+          logo: '/logo.png',
           walletList: ['metamask'],
         },
         defaultChain: plume,

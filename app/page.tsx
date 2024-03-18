@@ -1,28 +1,30 @@
 'use client';
 
-import { usePrivy } from '@privy-io/react-auth';
-import React, { useState, useLayoutEffect } from 'react';
+import { usePrivy, useModalStatus } from '@privy-io/react-auth';
+import React, { useState, useLayoutEffect, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { Inter } from 'next/font/google';
 import { motion } from 'framer-motion';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { ConnectButton, useConnectModal } from '@rainbow-me/rainbowkit';
 import { useAccount } from 'wagmi';
-
-const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
-});
 
 export default function Home() {
   const router = useRouter();
   const { isConnected } = useAccount();
   const { ready, login, authenticated } = usePrivy();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const [contentVisible, setContentVisible] = useState(false);
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
+  const { isOpen } = useModalStatus();
+  const { connectModalOpen } = useConnectModal();
+
+  useEffect(() => {
+    if ((isOpen || connectModalOpen) && modalOpen) {
+      setModalOpen(false);
+    } else {
+      setModalOpen(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, connectModalOpen]);
 
   useLayoutEffect(() => {
     if (ready && !authenticated && !isConnected) {
@@ -35,46 +37,47 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready, authenticated, isConnected]);
 
-  const sidebarVariants = {
+  const modalVariants = {
     open: {
-      x: 0,
       opacity: 1,
       transition: {
-        duration: 0.3,
-        ease: 'easeInOut',
+        duration: 0.4,
+        ease: 'easeIn',
       },
     },
     closed: {
-      x: '100%',
       opacity: 0,
+      transition: {
+        duration: 0.4,
+        ease: 'easeOut',
+      },
     },
   };
   if (contentVisible) {
     return (
       <>
         <motion.div
-          animate={sidebarOpen ? 'open' : 'closed'}
-          variants={sidebarVariants}
-          className={`fixed right-0 top-0 z-20 h-full w-1/5 bg-white p-4`}
+          animate={modalOpen ? 'open' : 'closed'}
+          variants={modalVariants}
+          className={`flex h-screen w-screen flex-row  items-center justify-center bg-neutral-50`}
         >
-          <div className='flex'>
-            <p className='text-base font-semibold text-gray-700'>
-              SELECT AUTH PROVIDER
-            </p>
-            <button className='ml-auto text-gray-300' onClick={toggleSidebar}>
-              <Image
-                src={'/cross.svg'}
-                height={12.8}
-                width={12.8}
-                alt='cross-sidebar'
-              />
-            </button>
-          </div>
-          <div className='mt-5 flex flex-col gap-5'>
+          <div className='flex h-[313px] w-auto flex-col items-center justify-center rounded-3xl border border-neutral-200 bg-white px-4 pb-4 pt-8'>
+            <Image
+              src={'/logo.png'}
+              height={62}
+              width={62}
+              alt='privy-logo'
+              className='mb-4'
+            />
+            <h1 className='self-center text-2xl font-semibold leading-9 tracking-wide text-[#292929]'>
+              Log in or Sign up
+            </h1>
+            <h3 className='mb-6 text-sm font-medium text-neutral-500'>
+              Please start by selecting Authentication Provider
+            </h3>
             <button
-              className='flex items-center gap-3 rounded-md border border-gray-300 px-6 py-3 text-left text-sm font-medium text-gray-800'
+              className='mb-3 flex h-10 w-full items-start gap-2 rounded-lg border border-neutral-200 py-2 pl-4 pr-6 shadow-sm'
               onClick={() => {
-                toggleSidebar();
                 login();
               }}
             >
@@ -84,28 +87,17 @@ export default function Home() {
                 width={16}
                 alt='privy-logo'
               />
-              Privy
+              <div className='text-sm font-medium leading-5 text-dark-red'>
+                Login with Privy
+              </div>
             </button>
             <ConnectButton.Custom>
-              {({
-                account,
-                chain,
-                openAccountModal,
-                openChainModal,
-                openConnectModal,
-                authenticationStatus,
-                mounted,
-              }) => {
+              {({ openConnectModal, authenticationStatus, mounted }) => {
                 const ready = mounted && authenticationStatus !== 'loading';
-                const connected =
-                  ready &&
-                  account &&
-                  chain &&
-                  (!authenticationStatus ||
-                    authenticationStatus === 'authenticated');
 
                 return (
                   <div
+                    className='h-10 w-full rounded-lg border border-neutral-200 shadow-sm'
                     {...(!ready && {
                       'aria-hidden': true,
                       style: {
@@ -116,75 +108,26 @@ export default function Home() {
                     })}
                   >
                     {(() => {
-                      if (!connected) {
-                        return (
+                      return (
+                        <>
                           <button
                             onClick={() => {
-                              toggleSidebar();
                               openConnectModal();
                             }}
-                            type='button'
-                            className='w-full'
+                            className='flex h-10 w-full items-start gap-2 py-2 pl-4 '
                           >
-                            <span className='flex items-center gap-3 rounded-md border border-gray-300 px-6 py-3 text-left text-sm font-medium text-gray-800'>
-                              <Image
-                                src={'/rainbowkit-logo.svg'}
-                                height={20}
-                                width={16}
-                                alt='rainbowkit-logo'
-                              />{' '}
-                              RainbowKit
-                            </span>
+                            <Image
+                              src={'/rainbowkit-logo.svg'}
+                              height={20}
+                              width={20}
+                              alt='rainbowkit-logo'
+                            />{' '}
+                            <div className='text-sm font-medium leading-5 text-dark-red'>
+                              {' '}
+                              Login with RainbowKit
+                            </div>
                           </button>
-                        );
-                      }
-
-                      if (chain.unsupported) {
-                        return (
-                          <button onClick={openChainModal} type='button'>
-                            Wrong network
-                          </button>
-                        );
-                      }
-
-                      return (
-                        <div style={{ display: 'flex', gap: 12 }}>
-                          <button
-                            onClick={openChainModal}
-                            style={{ display: 'flex', alignItems: 'center' }}
-                            type='button'
-                          >
-                            {chain.hasIcon && (
-                              <div
-                                style={{
-                                  background: chain.iconBackground,
-                                  width: 12,
-                                  height: 12,
-                                  borderRadius: 999,
-                                  overflow: 'hidden',
-                                  marginRight: 4,
-                                }}
-                              >
-                                {chain.iconUrl && (
-                                  <Image
-                                    src={chain.iconUrl}
-                                    alt={chain.name ?? 'Chain icon'}
-                                    width={12}
-                                    height={12}
-                                  />
-                                )}
-                              </div>
-                            )}
-                            {chain.name}
-                          </button>
-
-                          <button onClick={openAccountModal} type='button'>
-                            {account.displayName}
-                            {account.displayBalance
-                              ? ` (${account.displayBalance})`
-                              : ''}
-                          </button>
-                        </div>
+                        </>
                       );
                     })()}
                   </div>
@@ -193,18 +136,6 @@ export default function Home() {
             </ConnectButton.Custom>
           </div>
         </motion.div>
-        <button
-          className='absolute right-8 top-8 flex items-center gap-1 rounded-md border border-gray-300 p-2 text-sm font-semibold text-gray-700'
-          onClick={toggleSidebar}
-        >
-          <Image
-            src={'/switch-networks.svg'}
-            width={20}
-            height={20}
-            alt='Switch network Icon'
-          />{' '}
-          <span className={inter.className}>Switch Auth Provider</span>
-        </button>
       </>
     );
   }
