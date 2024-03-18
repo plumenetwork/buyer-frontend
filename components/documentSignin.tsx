@@ -1,16 +1,22 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
 import { Button } from './ui/button';
+import useLocalStorage from '@/lib/useLocalStorage';
 
 export default function DocumentSignin({
   setTabs,
 }: {
   setTabs: React.Dispatch<React.SetStateAction<number>>;
 }) {
-  const [signedStatus, setSignedStatus] = useState('not_signed_style');
-  const [signedMessage, setSignedMessage] = useState('not signed');
+  const [signedStatus, setSignedStatus] = useLocalStorage(
+    'signed_style',
+    'not_signed_style'
+  );
+  const [signedMessage, setSignedMessage] = useLocalStorage(
+    'signed_message',
+    'not signed'
+  );
 
   const signed = async () => {
     if (signedStatus == 'not_signed_style') {

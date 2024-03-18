@@ -1,5 +1,4 @@
-import { defineChain } from 'viem';
-import { Chain } from 'wagmi';
+import { defineChain, Chain } from 'viem';
 
 export const plume = defineChain({
   id: 161221135,

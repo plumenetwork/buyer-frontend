@@ -6,7 +6,7 @@ export default function ThankYou({
   transactionLink: string;
 }) {
   return (
-    <div className='flex w-[596px] flex-col items-center bg-white'>
+    <div className='flex w-[596px] max-w-[640px] flex-col items-center bg-white'>
       <Image src='/success.svg' alt='Thank You' width={80} height={80} />
       <h1 className='mt-6 text-center text-3xl font-semibold leading-9 text-dark-blue'>
         Thank you for minting!

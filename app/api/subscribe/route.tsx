@@ -50,6 +50,8 @@ export async function POST(req: Request) {
 
     if (received.title === 'Member Exists') {
       received.description = 'You are an existing member';
+    } else {
+      received.description = received.detail;
     }
     return NextResponse.json(received);
   } catch (e) {
