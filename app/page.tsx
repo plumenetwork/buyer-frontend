@@ -63,7 +63,7 @@ export default function Home() {
         >
           <div className='flex h-[313px] w-auto flex-col items-center justify-center rounded-3xl border border-neutral-200 bg-white px-4 pb-4 pt-8'>
             <Image
-              src={'/logo.png'}
+              src={`${process.env.NEXT_PUBLIC_COMMEMORATIVE_TOKEN_IMAGE_URL}`}
               height={62}
               width={62}
               alt='privy-logo'
@@ -73,7 +73,7 @@ export default function Home() {
               Log in or Sign up
             </h1>
             <h3 className='mb-6 text-sm font-medium text-neutral-500'>
-              Please start by selecting Authentication Provider
+              Choose one of the login options below
             </h3>
             <button
               className='mb-3 flex h-10 w-full items-start gap-2 rounded-lg border border-neutral-200 py-2 pl-4 pr-6 shadow-sm'
