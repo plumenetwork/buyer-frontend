@@ -20,7 +20,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(false);
+    setLoading(true);
   }, []);
 
   useEffect(() => {
@@ -66,7 +66,7 @@ export default function Home() {
           <motion.div
             animate={modalOpen ? 'open' : 'closed'}
             variants={modalVariants}
-            className={`flex h-screen w-screen flex-row  items-center justify-center bg-neutral-50`}
+            className={`flex min-h-screen w-screen flex-row  items-center justify-center bg-neutral-50`}
           >
             <div className='flex h-[313px] w-auto flex-col items-center justify-center rounded-3xl border border-neutral-200 bg-white px-4 pb-4 pt-8'>
               <Image
