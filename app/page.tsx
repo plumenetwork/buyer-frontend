@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { ConnectButton, useConnectModal } from '@rainbow-me/rainbowkit';
 import { useAccount } from 'wagmi';
+import { Loader } from '@/components/loader';
 
 export default function Home() {
   const router = useRouter();
@@ -16,6 +17,11 @@ export default function Home() {
   const [contentVisible, setContentVisible] = useState(false);
   const { isOpen } = useModalStatus();
   const { connectModalOpen } = useConnectModal();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(false);
+  }, []);
 
   useEffect(() => {
     if ((isOpen || connectModalOpen) && modalOpen) {
@@ -56,86 +62,90 @@ export default function Home() {
   if (contentVisible) {
     return (
       <>
-        <motion.div
-          animate={modalOpen ? 'open' : 'closed'}
-          variants={modalVariants}
-          className={`flex h-screen w-screen flex-row  items-center justify-center bg-neutral-50`}
-        >
-          <div className='flex h-[313px] w-auto flex-col items-center justify-center rounded-3xl border border-neutral-200 bg-white px-4 pb-4 pt-8'>
-            <Image
-              src={`${process.env.NEXT_PUBLIC_COMMEMORATIVE_TOKEN_IMAGE_URL}`}
-              height={62}
-              width={62}
-              alt='privy-logo'
-              className='mb-4'
-            />
-            <h1 className='self-center text-2xl font-semibold leading-9 tracking-wide text-[#292929]'>
-              Log in or Sign up
-            </h1>
-            <h3 className='mb-6 text-sm font-medium text-neutral-500'>
-              Choose one of the login options below
-            </h3>
-            <button
-              className='mb-3 flex h-10 w-full items-start gap-2 rounded-lg border border-neutral-200 py-2 pl-4 pr-6 shadow-sm'
-              onClick={() => {
-                login();
-              }}
-            >
+        {loading ? (
+          <motion.div
+            animate={modalOpen ? 'open' : 'closed'}
+            variants={modalVariants}
+            className={`flex h-screen w-screen flex-row  items-center justify-center bg-neutral-50`}
+          >
+            <div className='flex h-[313px] w-auto flex-col items-center justify-center rounded-3xl border border-neutral-200 bg-white px-4 pb-4 pt-8'>
               <Image
-                src={'/privy-logo.svg'}
-                height={20}
-                width={16}
+                src={`${process.env.NEXT_PUBLIC_COMMEMORATIVE_TOKEN_IMAGE_URL}`}
+                height={62}
+                width={62}
                 alt='privy-logo'
+                className='mb-4'
               />
-              <div className='text-sm font-medium leading-5 text-dark-red'>
-                Login with Privy
-              </div>
-            </button>
-            <ConnectButton.Custom>
-              {({ openConnectModal, authenticationStatus, mounted }) => {
-                const ready = mounted && authenticationStatus !== 'loading';
+              <h1 className='self-center text-2xl font-semibold leading-9 tracking-wide text-[#292929]'>
+                Log in or Sign up
+              </h1>
+              <h3 className='mb-6 text-sm font-medium text-neutral-500'>
+                Choose one of the login options below
+              </h3>
+              <button
+                className='mb-3 flex h-10 w-full items-start gap-2 rounded-lg border border-neutral-200 py-2 pl-4 pr-6 shadow-sm'
+                onClick={() => {
+                  login();
+                }}
+              >
+                <Image
+                  src={'/privy-logo.svg'}
+                  height={20}
+                  width={16}
+                  alt='privy-logo'
+                />
+                <div className='text-sm font-medium leading-5 text-dark-red'>
+                  Login with Privy
+                </div>
+              </button>
+              <ConnectButton.Custom>
+                {({ openConnectModal, authenticationStatus, mounted }) => {
+                  const ready = mounted && authenticationStatus !== 'loading';
 
-                return (
-                  <div
-                    className='h-10 w-full rounded-lg border border-neutral-200 shadow-sm'
-                    {...(!ready && {
-                      'aria-hidden': true,
-                      style: {
-                        opacity: 0,
-                        pointerEvents: 'none',
-                        userSelect: 'none',
-                      },
-                    })}
-                  >
-                    {(() => {
-                      return (
-                        <>
-                          <button
-                            onClick={() => {
-                              openConnectModal();
-                            }}
-                            className='flex h-10 w-full items-start gap-2 py-2 pl-4 '
-                          >
-                            <Image
-                              src={'/rainbowkit-logo.svg'}
-                              height={20}
-                              width={20}
-                              alt='rainbowkit-logo'
-                            />{' '}
-                            <div className='text-sm font-medium leading-5 text-dark-red'>
-                              {' '}
-                              Login with RainbowKit
-                            </div>
-                          </button>
-                        </>
-                      );
-                    })()}
-                  </div>
-                );
-              }}
-            </ConnectButton.Custom>
-          </div>
-        </motion.div>
+                  return (
+                    <div
+                      className='h-10 w-full rounded-lg border border-neutral-200 shadow-sm'
+                      {...(!ready && {
+                        'aria-hidden': true,
+                        style: {
+                          opacity: 0,
+                          pointerEvents: 'none',
+                          userSelect: 'none',
+                        },
+                      })}
+                    >
+                      {(() => {
+                        return (
+                          <>
+                            <button
+                              onClick={() => {
+                                openConnectModal();
+                              }}
+                              className='flex h-10 w-full items-start gap-2 py-2 pl-4 '
+                            >
+                              <Image
+                                src={'/rainbowkit-logo.svg'}
+                                height={20}
+                                width={20}
+                                alt='rainbowkit-logo'
+                              />{' '}
+                              <div className='text-sm font-medium leading-5 text-dark-red'>
+                                {' '}
+                                Login with RainbowKit
+                              </div>
+                            </button>
+                          </>
+                        );
+                      })()}
+                    </div>
+                  );
+                }}
+              </ConnectButton.Custom>
+            </div>
+          </motion.div>
+        ) : (
+          <Loader />
+        )}
       </>
     );
   }
