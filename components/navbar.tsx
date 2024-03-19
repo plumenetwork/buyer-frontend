@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import makeBlockie from 'ethereum-blockies-base64';
-import { useState, useLayoutEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { plume } from '@/lib/plumeChain';
 
@@ -47,7 +47,7 @@ export default function NavBar() {
     setBlockie(generatedBlockie);
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     let userAddress = '';
     if (ready && authenticated && wallets && wallets[0]) {
       userAddress = wallets[0].address;
@@ -67,10 +67,9 @@ export default function NavBar() {
         }
       })();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wallets, ready, authenticated]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     let userAddress = '';
     if (isConnected && address) {
       userAddress = address;
@@ -78,7 +77,7 @@ export default function NavBar() {
     }
   }, [address, isConnected]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!authenticated && chain?.name != 'Plume') {
       openChainModal?.();
     }
