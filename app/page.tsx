@@ -1,7 +1,7 @@
 'use client';
 
 import { usePrivy, useModalStatus } from '@privy-io/react-auth';
-import React, { useState, useLayoutEffect, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
@@ -17,11 +17,7 @@ export default function Home() {
   const [contentVisible, setContentVisible] = useState(false);
   const { isOpen } = useModalStatus();
   const { connectModalOpen } = useConnectModal();
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    setLoading(true);
-  }, []);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if ((isOpen || connectModalOpen) && modalOpen) {
@@ -32,7 +28,7 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, connectModalOpen]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (ready && !authenticated && !isConnected) {
       login();
     }
@@ -63,6 +59,8 @@ export default function Home() {
     return (
       <>
         {loading ? (
+          <Loader />
+        ) : (
           <motion.div
             animate={modalOpen ? 'open' : 'closed'}
             variants={modalVariants}
@@ -143,8 +141,6 @@ export default function Home() {
               </ConnectButton.Custom>
             </div>
           </motion.div>
-        ) : (
-          <Loader />
         )}
       </>
     );

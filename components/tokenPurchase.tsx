@@ -97,7 +97,6 @@ export default function TokenPurchaseComponent({
       toast({
         variant: 'fail',
         title: 'Minting Failed',
-        description: 'Transaction cancelled due to internal error',
       });
     }
   };

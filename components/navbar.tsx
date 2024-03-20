@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import makeBlockie from 'ethereum-blockies-base64';
-import { useState, useLayoutEffect } from 'react';
+import { useState, useEffect, useLayoutEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { plume } from '@/lib/plumeChain';
 
@@ -37,7 +37,7 @@ export default function NavBar() {
   const { chain } = useNetwork();
   const [blockie, setBlockie] = useState('');
   const [userAddress, setUserAddress] = useState('');
-  const { openChainModal } = useChainModal();
+  const { openChainModal, chainModalOpen } = useChainModal();
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
   const { toast } = useToast();
 
@@ -78,24 +78,29 @@ export default function NavBar() {
     }
   }, [address, isConnected]);
 
-  useLayoutEffect(() => {
-    if (!authenticated && chain?.name != 'Plume') {
+  useEffect(() => {
+    if (isConnected && address && chain?.name != 'Plume') {
       openChainModal?.();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chain]);
+  }, [chain, chainModalOpen]);
 
   const logoutHandler = () => {
     if (ready && authenticated) {
-      logout();
+      logout().then(() => {
+        localStorage.removeItem('currentTab');
+        localStorage.removeItem('signed_style');
+        localStorage.removeItem('signed_message');
+      });
     }
     if (isConnected) {
       disconnect();
+      localStorage.removeItem('currentTab');
+      localStorage.removeItem('signed_style');
+      localStorage.removeItem('signed_message');
     }
-    localStorage.removeItem('currentTab');
-    localStorage.removeItem('signed_style');
-    localStorage.removeItem('signed_message');
-    router.push('/');
+
+    router.replace('/');
   };
   return (
     <div className='absolute right-8 top-6 flex flex-row items-center justify-center'>
