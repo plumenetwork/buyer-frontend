@@ -4,10 +4,10 @@ import TokenInfo from './tokenInfo';
 import { Button } from './ui/button';
 import { abi } from '../lib/MintABI';
 import { useEffect, useState } from 'react';
-import ClipLoader from 'react-spinners/ClipLoader';
 import { plume } from '../lib/plumeChain';
-import { useContractWrite, usePrepareContractWrite } from 'wagmi';
-import { useWallets } from '@privy-io/react-auth';
+import { useAccount, useContractWrite, usePrepareContractWrite } from 'wagmi';
+import { encodeFunctionData } from 'viem';
+import { usePrivy, useWallets } from '@privy-io/react-auth';
 import { useToast } from '@/components/ui/use-toast';
 import Image from 'next/image';
 export default function TokenPurchaseComponent({
@@ -17,19 +17,24 @@ export default function TokenPurchaseComponent({
   setTabs: React.Dispatch<React.SetStateAction<number>>;
   setTransactionLink: React.Dispatch<React.SetStateAction<string>>;
 }) {
+  // Set State
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [isLoader, setIsLoader] = useState(false);
   const [remainingTime, setRemainingTime] = useState(0);
   const [TestnetToken, setTestnetToken] = useState(false);
-  const { wallets } = useWallets();
+  const [privyTransactionHash, setPrivyTransactionHash] = useState('');
+  const { address: userAddress, isConnected } = useAccount();
   const { toast } = useToast();
+  const { ready: privyWalletReady, wallets: privyWallet } = useWallets();
+  const { ready: privyReady, authenticated: privyAuthenticated } = usePrivy();
+
+  // Preparing contract for minting token for wallets other than privy...
   const { config } = usePrepareContractWrite({
     address: process.env.NEXT_PUBLIC_MINT_CONTRACT_ADDRESS as `0x${string}`,
     abi: abi,
     functionName: 'mint',
     chainId: plume.id,
   });
-
   const { data, write, isError } = useContractWrite(config);
 
   useEffect(() => {
@@ -40,24 +45,77 @@ export default function TokenPurchaseComponent({
       }
       setIsLoader(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, isError]);
+  //-----------------------------------------------------------------------------------------------------------------------------------
 
+  // For privy Integration
+  const privyData = encodeFunctionData({
+    abi: abi,
+    functionName: 'mint',
+  });
+
+  const transactionRequest = {
+    to: process.env.NEXT_PUBLIC_MINT_CONTRACT_ADDRESS,
+    from: `${privyWallet && privyWallet.length ? privyWallet[0].address : undefined}`,
+    data: privyData,
+  };
+
+  useEffect(() => {
+    if (privyTransactionHash !== undefined && privyTransactionHash !== '') {
+      setTransactionLink(privyTransactionHash);
+      setTabs(3);
+      setIsLoader(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [privyTransactionHash]);
+
+  //-----------------------------------------------------------------------------------------------------------------------------------
+
+  // Actual code for minting NFT, which can be used by privy as well as rainbowkit
   const mintNft = async () => {
     setIsLoader(true);
+
     try {
-      let tx = write && write();
+      if (!privyAuthenticated) {
+        // eslint-disable-next-line unused-imports/no-unused-vars
+        let tx = write && write();
+      } else if (privyWalletReady && privyWallet) {
+        const wallet = privyWallet[0];
+        await wallet.switchChain(plume.id);
+        const provider = await wallet.getEthereumProvider();
+        const transactionHash = await provider.request({
+          method: 'eth_sendTransaction',
+          params: [transactionRequest],
+        });
+        setPrivyTransactionHash(transactionHash);
+      } else {
+        throw new Error('wallet is not present');
+      }
     } catch (error) {
-      console.error('Error minting token', error);
+      setIsLoader(false);
+      toast({
+        variant: 'fail',
+        title: 'Minting Failed',
+      });
     }
   };
+
+  //--------------------------------------------------------------------------
+
+  // Actual code for getting testnet tokens, will work irrespective of chain and wallet
 
   const getTestnetToken = async (e: any) => {
     e.preventDefault();
     setTestnetToken(true);
     let address = '';
-    if (wallets && wallets[0]) {
-      address = wallets[0].address;
+    if (privyReady && privyAuthenticated && privyWallet && privyWallet[0]) {
+      address = privyWallet[0].address;
     }
+    if (isConnected && userAddress) {
+      address = userAddress;
+    }
+
     let response = await fetch('/api/faucet', {
       headers: {
         'Content-Type': 'application/json',
@@ -121,7 +179,7 @@ export default function TokenPurchaseComponent({
   };
 
   return (
-    <div className='flex w-[575px] flex-col items-center bg-white'>
+    <div className='flex w-[575px] max-w-[640px] flex-col items-center bg-white'>
       <h1 className='text-3xl font-semibold leading-9'>Token Purchase</h1>
 
       <h3 className='my-4 px-16 text-center text-base font-normal leading-6 text-gray-700'>
@@ -133,12 +191,12 @@ export default function TokenPurchaseComponent({
       <TokenInfo />
       <Button
         onClick={mintNft}
-        className='my-3 aspect-[12/1] w-full text-base hover:bg-hover-blue hover:text-neutral-400 disabled:cursor-not-allowed disabled:bg-hover-blue'
+        className='my-3 aspect-[12/1] w-full text-base disabled:cursor-not-allowed disabled:bg-hover-blue'
         disabled={isLoader}
       >
         {isLoader ? (
           <>
-            <ClipLoader color='#027DFC' loading={isLoader} size={30} />
+            <div className='motion-reduce:animate-[spin_1.5s_linear_infinite inline-block h-5 w-5 animate-spin rounded-full border-2 border-solid border-dropdown-blue border-t-transparent align-[-0.125em]' />
           </>
         ) : (
           <>Purchase</>
@@ -146,7 +204,7 @@ export default function TokenPurchaseComponent({
       </Button>
       <Button
         onClick={getTestnetToken}
-        className={`aspect-[12/1] w-full text-base hover:bg-hover-blue hover:text-neutral-400 disabled:cursor-not-allowed disabled:bg-hover-blue disabled:text-[rgb(163,163,163)] ${TestnetToken ? 'bg-hover-bg-blue' : 'bg-true-blue'}`}
+        className={`aspect-[12/1] w-full text-base disabled:cursor-not-allowed disabled:bg-hover-blue disabled:text-[rgb(163,163,163)] ${TestnetToken ? 'bg-hover-bg-blue' : 'bg-true-blue'}`}
         disabled={buttonDisabled}
       >
         {buttonDisabled ? (

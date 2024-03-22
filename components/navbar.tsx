@@ -14,8 +14,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import makeBlockie from 'ethereum-blockies-base64';
-import { useLayoutEffect, useState, useEffect } from 'react';
+import { useState, useEffect, useLayoutEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
+import { plume } from '@/lib/plumeChain';
 
 function shortenAddress(address: string) {
   if (!address || address.length < 10) return address;
@@ -52,6 +53,21 @@ export default function NavBar() {
       userAddress = wallets[0].address;
       getAddressAndGenerateBlockie(userAddress);
     }
+
+    if (ready && authenticated && wallets[0]?.chainId != plume.id.toString()) {
+      (async () => {
+        try {
+          await wallets[0]?.switchChain?.(plume.id);
+        } catch {
+          toast({
+            variant: 'fail',
+            title: 'wallet address changed from Plume.',
+            description: 'Please set it back to Plume Network',
+          });
+        }
+      })();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wallets, ready, authenticated]);
 
   useLayoutEffect(() => {
@@ -63,19 +79,28 @@ export default function NavBar() {
   }, [address, isConnected]);
 
   useEffect(() => {
-    if (chain?.name != 'Plume') {
+    if (isConnected && address && chain?.name != 'Plume') {
       openChainModal?.();
     }
-  }, [chain, chainModalOpen, disconnect, openChainModal]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chain, chainModalOpen]);
 
   const logoutHandler = () => {
     if (ready && authenticated) {
-      logout();
+      logout().then(() => {
+        localStorage.removeItem('currentTab');
+        localStorage.removeItem('signed_style');
+        localStorage.removeItem('signed_message');
+      });
     }
     if (isConnected) {
       disconnect();
+      localStorage.removeItem('currentTab');
+      localStorage.removeItem('signed_style');
+      localStorage.removeItem('signed_message');
     }
-    router.push('/');
+
+    router.replace('/');
   };
   return (
     <div className='absolute right-8 top-6 flex flex-row items-center justify-center'>

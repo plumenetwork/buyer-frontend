@@ -1,9 +1,9 @@
 'use client';
 
-import { plume } from '@/lib/plumeChain';
+import * as React from 'react';
 import { PrivyProvider } from '@privy-io/react-auth';
 import { useRouter } from 'next/navigation';
-import * as React from 'react';
+import { plume } from '@/lib/plumeChain';
 
 export default function PrivyProviders({
   children,
@@ -20,7 +20,8 @@ export default function PrivyProviders({
           accentColor: '#6A6FF5',
           theme: '#FFFFFF',
           showWalletLoginFirst: false,
-          logo: '/plume-logo.svg',
+          logo: process.env.NEXT_PUBLIC_COMMEMORATIVE_TOKEN_IMAGE_URL,
+          walletList: ['metamask'],
         },
         defaultChain: plume,
         supportedChains: [plume],
