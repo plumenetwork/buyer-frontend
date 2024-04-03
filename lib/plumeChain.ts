@@ -3,6 +3,7 @@ import { defineChain, Chain } from 'viem';
 export const plume = defineChain({
   id: 161221135,
   name: 'Plume',
+  iconUrl: 'https://assets.plumenetwork.xyz/images/logos/plume.png',
   network: 'Plume Testnet',
   nativeCurrency: {
     decimals: 18,
@@ -10,13 +11,13 @@ export const plume = defineChain({
     symbol: 'ETH',
   },
   rpcUrls: {
-    public: { http: ['https://plume-testnet.rpc.caldera.xyz/http'] },
-    default: { http: ['https://plume-testnet.rpc.caldera.xyz/http'] },
+    public: { http: ['https://testnet-rpc.plumenetwork.xyz/http'] },
+    default: { http: ['https://testnet-rpc.plumenetwork.xyz/http'] },
   },
   blockExplorers: {
     default: {
       name: 'Blockscout',
-      url: 'https://plume-testnet.explorer.caldera.xyz',
+      url: 'https://testnet-explorer.plumenetwork.xyz',
     },
   },
   testnet: true,
