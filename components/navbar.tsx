@@ -98,6 +98,7 @@ export default function NavBar() {
       localStorage.removeItem('currentTab');
       localStorage.removeItem('signed_style');
       localStorage.removeItem('signed_message');
+      localStorage.removeItem('txLink');
     }
 
     router.replace('/');

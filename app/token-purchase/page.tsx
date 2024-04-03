@@ -15,7 +15,7 @@ import { Loader } from '@/components/loader';
 const inter = Inter({ subsets: ['latin'] });
 
 function TokenPurchase() {
-  const [transactionLink, setTransactionLink] = useState('');
+  const [transactionLink, setTransactionLink] = useLocalStorage('txLink', '');
   const [loading, setLoading] = useState(true);
   const [tabs, setTabs] = useLocalStorage('currentTab', 0);
   useEffect(() => {
@@ -47,7 +47,7 @@ function TokenPurchase() {
           <div
             className={`flex h-screen w-screen items-center justify-center ${inter.className}`}
           >
-            <div className='hidden h-full w-1/3 md:flex'>
+            <div className='hidden h-full w-1/3 lg:flex'>
               <StepperBar tabs={tabs} />
             </div>
             <div className='flex h-full w-2/3 items-center justify-center'>
