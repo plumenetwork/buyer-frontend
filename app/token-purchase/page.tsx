@@ -15,7 +15,7 @@ import { Loader } from '@/components/loader';
 const inter = Inter({ subsets: ['latin'] });
 
 function TokenPurchase() {
-  const [transactionLink, setTransactionLink] = useState('');
+  const [transactionLink, setTransactionLink] = useLocalStorage('txLink', '');
   const [loading, setLoading] = useState(true);
   const [tabs, setTabs] = useLocalStorage('currentTab', 0);
   useEffect(() => {
