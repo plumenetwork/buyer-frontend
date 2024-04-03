@@ -3,6 +3,7 @@ import { defineChain, Chain } from 'viem';
 export const plume = defineChain({
   id: 161221135,
   name: 'Plume',
+  iconUrl: 'https://assets.plumenetwork.xyz/images/logos/plume.png',
   network: 'Plume Testnet',
   nativeCurrency: {
     decimals: 18,
