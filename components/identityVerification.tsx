@@ -53,20 +53,25 @@ export default function IdentityVerification({
         asset launches to be first in line to purchase it.
       </h3>
       <p className='mb-2 self-start text-sm font-medium'>Email Address</p>
-      <Input
-        ref={inputRef}
-        required
-        type='email'
-        placeholder='example@email.com'
-        autoCorrect='off'
-      />
-      <Button
-        disabled={buttonDisabled}
-        className='my-5 aspect-[10/1] w-full disabled:opacity-50'
-        onClick={subscribeUser}
+      <form
+        className='m-0 w-[575px] max-w-[640px] p-0'
+        onSubmit={subscribeUser}
       >
-        Continue
-      </Button>
+        <Input
+          ref={inputRef}
+          required
+          type='email'
+          placeholder='example@email.com'
+          autoCorrect='off'
+        />
+        <Button
+          disabled={buttonDisabled}
+          className='my-5 aspect-[10/1] w-full disabled:opacity-50'
+          type='submit'
+        >
+          Continue
+        </Button>
+      </form>
       <p className='mt-5 text-center text-xs font-normal text-neutral-500'>
         To purchase this real-world asset on mainnet, you will have to undergo a
         Know Your Customer (KYC) process with an external provider. This will
