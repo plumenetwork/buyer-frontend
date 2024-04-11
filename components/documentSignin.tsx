@@ -1,14 +1,23 @@
 'use client';
 
 import Image from 'next/image';
-import { Button } from './ui/button';
+import { useAccount } from 'wagmi';
+
+import { getWebApiKey } from '@/lib/ethSign-Server';
 import useLocalStorage from '@/lib/useLocalStorage';
+import { SignWebClient } from '@ethsign/sign-sdk';
+
+import { Button } from './ui/button';
 
 export default function DocumentSignin({
   setTabs,
 }: {
   setTabs: React.Dispatch<React.SetStateAction<number>>;
 }) {
+  const { address } = useAccount() as { address: string };
+  const contractId = process.env
+    .NEXT_PUBLIC_PLUME_TESTNET_ETHSIGN_CONTRACT_ID as string;
+
   const [signedStatus, setSignedStatus] = useLocalStorage(
     'signed_style',
     'not_signed_style'
@@ -18,11 +27,20 @@ export default function DocumentSignin({
     'not signed'
   );
 
+  const webClient = new SignWebClient({
+    getApiKey: async () => {
+      return await getWebApiKey(contractId, address);
+    },
+  });
+
   const signed = async () => {
     if (signedStatus == 'not_signed_style') {
       setSignedStatus('signed_style');
       setSignedMessage('signed');
-      window.open(`${process.env.NEXT_PUBLIC_ETHSIGN_LINK}`, '_blank');
+
+      const previewUrl = await webClient.generatePreviewUrl(contractId);
+
+      window.open(previewUrl, '_blank');
     } else {
       setTabs(2);
     }
