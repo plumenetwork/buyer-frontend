@@ -24,7 +24,7 @@ export default function ThankYou({
           }}
           className='text-sm font-medium text-link-blue'
         >
-          View Transaction{' '}
+          View Commemorative Token{' '}
         </button>
         <Image
           src='/link-blue-icon.svg'
