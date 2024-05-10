@@ -10,6 +10,10 @@ import { plumeTestnet } from 'wagmi/chains';
 import { abi } from '../lib/MintABI';
 import TokenInfo from './tokenInfo';
 import { Button } from './ui/button';
+
+const contractAddress = process.env
+  .NEXT_PUBLIC_MINT_CONTRACT_ADDRESS as `0x${string}`;
+
 export default function TokenPurchaseComponent({
   setTabs,
   setTransactionLink,
@@ -38,16 +42,43 @@ export default function TokenPurchaseComponent({
   });
 
   const transactionRequest = {
-    to: process.env.NEXT_PUBLIC_MINT_CONTRACT_ADDRESS,
+    to: contractAddress,
     from: `${privyWallet && privyWallet.length ? privyWallet[0].address : undefined}`,
     data: privyData,
   };
 
+  const setTransactionHash = async (transactionHash: string) => {
+    try {
+      let response = await fetch('/api/token', {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify({ transactionHash }),
+      });
+      const data = await response.json();
+      console.log('data');
+      console.log(data);
+      if (data.status < 400) {
+        setTransactionLink(data.transactionLink);
+      } else {
+        throw new Error('Transaction link could not be retrieved');
+      }
+    } catch (error) {
+      console.log(error);
+      toast({
+        variant: 'fail',
+        title: 'Could not retrieve transaction link',
+      });
+    }
+  };
+
   useEffect(() => {
     if (privyTransactionHash !== undefined && privyTransactionHash !== '') {
-      setTransactionLink(privyTransactionHash);
-      setTabs(3);
-      setIsLoader(false);
+      setTransactionHash(privyTransactionHash).then(() => {
+        setTabs(3);
+        setIsLoader(false);
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [privyTransactionHash]);
@@ -63,12 +94,11 @@ export default function TokenPurchaseComponent({
       if (!privyAuthenticated) {
         try {
           const transactionHash = await writeContractAsync({
-            address: process.env
-              .NEXT_PUBLIC_MINT_CONTRACT_ADDRESS as `0x${string}`,
+            address: contractAddress,
             abi,
             functionName: 'mint',
           });
-          setTransactionLink(transactionHash);
+          await setTransactionHash(transactionHash);
           setTabs(3);
         } catch (error) {
           console.error(error);

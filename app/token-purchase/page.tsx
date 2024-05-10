@@ -1,16 +1,16 @@
 'use client';
 
-import NavBar from '@/components/navbar';
-import IdentityVerification from '@/components/identityVerification';
-import StepperBar from '@/components/stepperBar';
-import { Inter } from 'next/font/google';
-import { useState, useEffect } from 'react';
 import DocumentSignin from '@/components/documentSignin';
-import TokenPurchaseComponent from '@/components/tokenPurchase';
-import ThankYou from '@/components/thankYou';
-import withAuth from '@/middleware/auth';
-import useLocalStorage from '@/lib/useLocalStorage';
+import IdentityVerification from '@/components/identityVerification';
 import { Loader } from '@/components/loader';
+import NavBar from '@/components/navbar';
+import StepperBar from '@/components/stepperBar';
+import ThankYou from '@/components/thankYou';
+import TokenPurchaseComponent from '@/components/tokenPurchase';
+import useLocalStorage from '@/lib/useLocalStorage';
+import withAuth from '@/middleware/auth';
+import { Inter } from 'next/font/google';
+import { useEffect, useState } from 'react';
 
 const inter = Inter({ subsets: ['latin'] });
 
