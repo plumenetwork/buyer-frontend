@@ -1,15 +1,15 @@
 'use client';
 
+import { useToast } from '@/components/ui/use-toast';
+import { usePrivy, useWallets } from '@privy-io/react-auth';
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import { encodeFunctionData } from 'viem';
+import { useAccount, useWriteContract } from 'wagmi';
+import { plumeTestnet } from 'wagmi/chains';
+import { abi } from '../lib/MintABI';
 import TokenInfo from './tokenInfo';
 import { Button } from './ui/button';
-import { abi } from '../lib/MintABI';
-import { useEffect, useState } from 'react';
-import { plume } from '../lib/plumeChain';
-import { useAccount, useContractWrite, usePrepareContractWrite } from 'wagmi';
-import { encodeFunctionData } from 'viem';
-import { usePrivy, useWallets } from '@privy-io/react-auth';
-import { useToast } from '@/components/ui/use-toast';
-import Image from 'next/image';
 export default function TokenPurchaseComponent({
   setTabs,
   setTransactionLink,
@@ -27,26 +27,7 @@ export default function TokenPurchaseComponent({
   const { toast } = useToast();
   const { ready: privyWalletReady, wallets: privyWallet } = useWallets();
   const { ready: privyReady, authenticated: privyAuthenticated } = usePrivy();
-
-  // Preparing contract for minting token for wallets other than privy...
-  const { config } = usePrepareContractWrite({
-    address: process.env.NEXT_PUBLIC_MINT_CONTRACT_ADDRESS as `0x${string}`,
-    abi: abi,
-    functionName: 'mint',
-    chainId: plume.id,
-  });
-  const { data, write, isError } = useContractWrite(config);
-
-  useEffect(() => {
-    if (data !== undefined || isError) {
-      if (data) {
-        setTransactionLink(data.hash);
-        setTabs(3);
-      }
-      setIsLoader(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, isError]);
+  const { data: hash, writeContract } = useWriteContract();
   //-----------------------------------------------------------------------------------------------------------------------------------
 
   // For privy Integration
@@ -78,11 +59,24 @@ export default function TokenPurchaseComponent({
 
     try {
       if (!privyAuthenticated) {
-        // eslint-disable-next-line unused-imports/no-unused-vars
-        let tx = write && write();
+        try {
+          writeContract({
+            address: process.env.NEXT_PUBLIC_MINT_CONTRACT_ADDRESS as `0x${string}`,
+            abi,
+            functionName: "mint",
+          });
+          if (hash) {
+            setTransactionLink(String(hash));
+            setTabs(3);
+            setIsLoader(false);
+          }
+        } catch (error) {
+          console.error(error);
+          setIsLoader(false);
+        }
       } else if (privyWalletReady && privyWallet) {
         const wallet = privyWallet[0];
-        await wallet.switchChain(plume.id);
+        await wallet.switchChain(plumeTestnet.id);
         const provider = await wallet.getEthereumProvider();
         const transactionHash = await provider.request({
           method: 'eth_sendTransaction',
