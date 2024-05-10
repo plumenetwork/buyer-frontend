@@ -49,21 +49,19 @@ export default function TokenPurchaseComponent({
 
   const setTransactionHash = async (transactionHash: string) => {
     try {
-      let response = await fetch('/api/token', {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-        body: JSON.stringify({ transactionHash }),
-      });
+      const response = await fetch(
+        `https://testnet-explorer.plumenetwork.xyz/api?module=transaction&action=gettxinfo&txhash=${transactionHash}`
+      );
       const data = await response.json();
-      console.log('data');
-      console.log(data);
-      if (data.status < 400) {
-        setTransactionLink(data.transactionLink);
-      } else {
-        throw new Error('Transaction link could not be retrieved');
-      }
+      const tokenId = parseInt(
+        data?.result?.logs?.[0]?.topics?.[3] ?? '-0x1',
+        16
+      );
+      setTransactionLink(
+        tokenId >= 0
+          ? `https://testnet-explorer.plumenetwork.xyz/token/${contractAddress}/instance/${tokenId}`
+          : `https://testnet-explorer.plumenetwork.xyz/tx/${transactionHash}`
+      );
     } catch (error) {
       console.log(error);
       toast({
