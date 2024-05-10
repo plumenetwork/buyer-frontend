@@ -1,10 +1,5 @@
 'use client';
 
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { usePrivy, useWallets } from '@privy-io/react-auth';
-import { useChainModal } from '@rainbow-me/rainbowkit';
-import { useAccount, useDisconnect, useNetwork } from 'wagmi';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,10 +8,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import makeBlockie from 'ethereum-blockies-base64';
-import { useState, useEffect, useLayoutEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
-import { plume } from '@/lib/plumeChain';
+import { usePrivy, useWallets } from '@privy-io/react-auth';
+import { useChainModal } from '@rainbow-me/rainbowkit';
+import makeBlockie from 'ethereum-blockies-base64';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useEffect, useLayoutEffect, useState } from 'react';
+import { useAccount, useChainId, useDisconnect } from 'wagmi';
+import { plumeTestnet } from 'wagmi/chains';
 
 function shortenAddress(address: string) {
   if (!address || address.length < 10) return address;
@@ -34,7 +34,7 @@ export default function NavBar() {
   const { wallets } = useWallets();
   const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
-  const { chain } = useNetwork();
+  const chainId = useChainId();
   const [blockie, setBlockie] = useState('');
   const [userAddress, setUserAddress] = useState('');
   const { openChainModal, chainModalOpen } = useChainModal();
@@ -54,10 +54,10 @@ export default function NavBar() {
       getAddressAndGenerateBlockie(userAddress);
     }
 
-    if (ready && authenticated && wallets[0]?.chainId != plume.id.toString()) {
+    if (ready && authenticated && chainId != plumeTestnet.id) {
       (async () => {
         try {
-          await wallets[0]?.switchChain?.(plume.id);
+          await wallets[0]?.switchChain?.(plumeTestnet.id);
         } catch {
           toast({
             variant: 'fail',
@@ -79,11 +79,11 @@ export default function NavBar() {
   }, [address, isConnected]);
 
   useEffect(() => {
-    if (isConnected && address && chain?.name != 'Plume') {
+    if (isConnected && address && chainId != plumeTestnet.id) {
       openChainModal?.();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chain, chainModalOpen]);
+  }, [chainId, chainModalOpen]);
 
   const logoutHandler = () => {
     if (ready && authenticated) {
