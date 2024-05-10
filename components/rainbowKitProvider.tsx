@@ -15,9 +15,8 @@ import {
 } from '@rainbow-me/rainbowkit/wallets';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WagmiProvider } from 'wagmi';
-import { mainnet, plumeTestnet } from 'wagmi/chains';
+import { plumeTestnet } from 'wagmi/chains';
 
-// Mainnet is present, because it helps Plume Testnet to connect with Coinbase Wallet.
 const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID as string;
 const { wallets } = getDefaultWallets();
 const queryClient = new QueryClient();
@@ -38,8 +37,7 @@ const wagmiConfig = getDefaultConfig({
       ],
     },
   ],
-  chains: [mainnet, plumeTestnet],
-  ssr: true,
+  chains: [plumeTestnet],
 });
 
 export default function RainbowKitProviders({
