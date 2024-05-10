@@ -61,9 +61,10 @@ export default function TokenPurchaseComponent({
       if (!privyAuthenticated) {
         try {
           writeContract({
-            address: process.env.NEXT_PUBLIC_MINT_CONTRACT_ADDRESS as `0x${string}`,
+            address: process.env
+              .NEXT_PUBLIC_MINT_CONTRACT_ADDRESS as `0x${string}`,
             abi,
-            functionName: "mint",
+            functionName: 'mint',
           });
           if (hash) {
             setTransactionLink(String(hash));
