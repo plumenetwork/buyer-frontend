@@ -3,7 +3,6 @@
 import Image from 'next/image';
 import { useAccount } from 'wagmi';
 
-import { getWebApiKey } from '@/lib/ethSign-Server';
 import useLocalStorage from '@/lib/useLocalStorage';
 import { SignWebClient } from '@ethsign/sign-sdk';
 
@@ -29,7 +28,9 @@ export default function DocumentSignin({
 
   const webClient = new SignWebClient({
     getApiKey: async () => {
-      return await getWebApiKey(contractId, address);
+      const response = await fetch('/api/ethsign');
+      const json = (await response.json()) as { webApiKey: string };
+      return json.webApiKey;
     },
   });
 
