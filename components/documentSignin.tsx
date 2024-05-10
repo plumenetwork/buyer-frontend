@@ -1,22 +1,19 @@
 'use client';
 
-import Image from 'next/image';
-import { useAccount } from 'wagmi';
-
 import useLocalStorage from '@/lib/useLocalStorage';
 import { SignWebClient } from '@ethsign/sign-sdk';
-
+import Image from 'next/image';
+import { useEffect } from 'react';
+import { useAccount } from 'wagmi';
 import { Button } from './ui/button';
+import { toast } from './ui/use-toast';
 
 export default function DocumentSignin({
   setTabs,
 }: {
   setTabs: React.Dispatch<React.SetStateAction<number>>;
 }) {
-  const { address } = useAccount() as { address: string };
-  const contractId = process.env
-    .NEXT_PUBLIC_PLUME_TESTNET_ETHSIGN_CONTRACT_ID as string;
-
+  const { address: userAddress } = useAccount() as { address: string };
   const [signedStatus, setSignedStatus] = useLocalStorage(
     'signed_style',
     'not_signed_style'
@@ -34,18 +31,62 @@ export default function DocumentSignin({
     },
   });
 
-  const signed = async () => {
-    if (signedStatus == 'not_signed_style') {
-      setSignedStatus('signed_style');
-      setSignedMessage('signed');
-
-      const previewUrl = await webClient.generatePreviewUrl(contractId);
-
-      window.open(previewUrl, '_blank');
+  const handleClick = () => {
+    if (signedStatus === 'not_signed_style') {
+      window.open(
+        `https://app.ethsign.xyz/contract/${process.env.NEXT_PUBLIC_PLUME_TESTNET_ETHSIGN_CONTRACT_ID}`,
+        '_blank'
+      );
     } else {
       setTabs(2);
     }
   };
+
+  useEffect(() => {
+    const checkIfSigned = async () => {
+      try {
+        const response = await fetch('/api/ethsign', {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          method: 'POST',
+          body: JSON.stringify({ userAddress }),
+        });
+        const data = await response.json();
+        console.log(data.contractStatus.signed);
+        if (data.status < 400) {
+          if (data.contractStatus.signed) {
+            toast({
+              variant: 'pass',
+              title: 'Contract Signed',
+              description: 'You have successfully signed the onchain contract.',
+            });
+            setSignedStatus('signed_style');
+            setSignedMessage('signed');
+          }
+        } else {
+          toast({
+            variant: 'fail',
+            title: data.title,
+            description: data.description,
+          });
+        }
+      } catch (error) {
+        console.log(error);
+        toast({
+          variant: 'fail',
+          title: 'Fetching Failed',
+          description: 'Failed to fetch',
+        });
+      }
+    };
+
+    if (userAddress && signedStatus === 'not_signed_style') {
+      const interval = setInterval(checkIfSigned, 500);
+      return () => clearInterval(interval);
+    }
+  }, [userAddress, signedStatus, setTabs, setSignedStatus, setSignedMessage]);
+
   return (
     <div className='flex w-[575px] flex-col items-center bg-white'>
       <h1 className='mb-3 text-3xl font-semibold leading-9 text-dark-blue'>
@@ -71,9 +112,7 @@ export default function DocumentSignin({
       </div>
       <Button
         className='my-3 aspect-[12/1] w-full px-6 py-3 text-sm leading-6'
-        onClick={() => {
-          signed();
-        }}
+        onClick={handleClick}
       >
         {signedStatus === 'not_signed_style' ? (
           <>
