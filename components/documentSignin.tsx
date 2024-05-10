@@ -8,7 +8,8 @@ import { useAccount } from 'wagmi';
 import { Button } from './ui/button';
 import { toast } from './ui/use-toast';
 
-const contractId = process.env.NEXT_PUBLIC_PLUME_TESTNET_ETHSIGN_CONTRACT_ID as string;
+const contractId = process.env
+  .NEXT_PUBLIC_PLUME_TESTNET_ETHSIGN_CONTRACT_ID as string;
 
 export default function DocumentSignin({
   setTabs,
@@ -35,10 +36,7 @@ export default function DocumentSignin({
 
   const handleContinue = () => {
     if (signedStatus === 'not_signed_style') {
-      window.open(
-        `https://app.ethsign.xyz/contract/${contractId}`,
-        '_blank'
-      );
+      window.open(`https://app.ethsign.xyz/contract/${contractId}`, '_blank');
     } else {
       setTabs(2);
     }
@@ -48,7 +46,7 @@ export default function DocumentSignin({
     // const previewUrl = await webClient.generatePreviewUrl(contractId);
     const previewUrl = `https://app.ethsign.xyz/contract/${contractId}`;
     window.open(previewUrl, '_blank');
-  }
+  };
 
   useEffect(() => {
     const checkIfSigned = async () => {
@@ -137,7 +135,7 @@ export default function DocumentSignin({
           <p>Continue</p>
         )}
       </Button>
-      {signedStatus === 'signed_style' &&
+      {signedStatus === 'signed_style' && (
         <>
           <Button
             className='mb-3 aspect-[12/1] w-full px-6 py-3 text-sm leading-6'
@@ -153,7 +151,7 @@ export default function DocumentSignin({
             />
           </Button>
         </>
-      }
+      )}
     </div>
   );
 }
