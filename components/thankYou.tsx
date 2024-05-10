@@ -17,10 +17,7 @@ export default function ThankYou({
       <div className='mb-4 flex flex-row'>
         <button
           onClick={() => {
-            window.open(
-              `https://plume-testnet.explorer.caldera.xyz/tx/${transactionLink}`,
-              '_blank'
-            );
+            window.open(transactionLink, '_blank');
           }}
           className='text-sm font-medium text-link-blue'
         >
