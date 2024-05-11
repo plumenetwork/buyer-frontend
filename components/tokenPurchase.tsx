@@ -1,15 +1,19 @@
 'use client';
 
+import { useToast } from '@/components/ui/use-toast';
+import { usePrivy, useWallets } from '@privy-io/react-auth';
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import { encodeFunctionData } from 'viem';
+import { useAccount, useSwitchChain, useWriteContract } from 'wagmi';
+import { plumeTestnet } from 'wagmi/chains';
+import { abi } from '../lib/MintABI';
 import TokenInfo from './tokenInfo';
 import { Button } from './ui/button';
-import { abi } from '../lib/MintABI';
-import { useEffect, useState } from 'react';
-import { plume } from '../lib/plumeChain';
-import { useAccount, useContractWrite, usePrepareContractWrite } from 'wagmi';
-import { encodeFunctionData } from 'viem';
-import { usePrivy, useWallets } from '@privy-io/react-auth';
-import { useToast } from '@/components/ui/use-toast';
-import Image from 'next/image';
+
+const contractAddress = process.env
+  .NEXT_PUBLIC_MINT_CONTRACT_ADDRESS as `0x${string}`;
+
 export default function TokenPurchaseComponent({
   setTabs,
   setTransactionLink,
@@ -27,26 +31,8 @@ export default function TokenPurchaseComponent({
   const { toast } = useToast();
   const { ready: privyWalletReady, wallets: privyWallet } = useWallets();
   const { ready: privyReady, authenticated: privyAuthenticated } = usePrivy();
-
-  // Preparing contract for minting token for wallets other than privy...
-  const { config } = usePrepareContractWrite({
-    address: process.env.NEXT_PUBLIC_MINT_CONTRACT_ADDRESS as `0x${string}`,
-    abi: abi,
-    functionName: 'mint',
-    chainId: plume.id,
-  });
-  const { data, write, isError } = useContractWrite(config);
-
-  useEffect(() => {
-    if (data !== undefined || isError) {
-      if (data) {
-        setTransactionLink(data.hash);
-        setTabs(3);
-      }
-      setIsLoader(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, isError]);
+  const { writeContractAsync } = useWriteContract();
+  const { switchChain } = useSwitchChain();
   //-----------------------------------------------------------------------------------------------------------------------------------
 
   // For privy Integration
@@ -56,16 +42,41 @@ export default function TokenPurchaseComponent({
   });
 
   const transactionRequest = {
-    to: process.env.NEXT_PUBLIC_MINT_CONTRACT_ADDRESS,
+    to: contractAddress,
     from: `${privyWallet && privyWallet.length ? privyWallet[0].address : undefined}`,
     data: privyData,
   };
 
+  const setTransactionHash = async (transactionHash: string) => {
+    try {
+      const response = await fetch(
+        `https://testnet-explorer.plumenetwork.xyz/api?module=transaction&action=gettxinfo&txhash=${transactionHash}`
+      );
+      const data = await response.json();
+      const tokenId = parseInt(
+        data?.result?.logs?.[0]?.topics?.[3] ?? '-0x1',
+        16
+      );
+      setTransactionLink(
+        tokenId >= 0
+          ? `https://testnet-explorer.plumenetwork.xyz/token/${contractAddress}/instance/${tokenId}`
+          : `https://testnet-explorer.plumenetwork.xyz/tx/${transactionHash}`
+      );
+    } catch (error) {
+      console.log(error);
+      toast({
+        variant: 'fail',
+        title: 'Could not retrieve transaction link',
+      });
+    }
+  };
+
   useEffect(() => {
     if (privyTransactionHash !== undefined && privyTransactionHash !== '') {
-      setTransactionLink(privyTransactionHash);
-      setTabs(3);
-      setIsLoader(false);
+      setTransactionHash(privyTransactionHash).then(() => {
+        setTabs(3);
+        setIsLoader(false);
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [privyTransactionHash]);
@@ -77,12 +88,22 @@ export default function TokenPurchaseComponent({
     setIsLoader(true);
 
     try {
+      switchChain({ chainId: plumeTestnet.id });
       if (!privyAuthenticated) {
-        // eslint-disable-next-line unused-imports/no-unused-vars
-        let tx = write && write();
+        try {
+          const transactionHash = await writeContractAsync({
+            address: contractAddress,
+            abi,
+            functionName: 'mint',
+          });
+          await setTransactionHash(transactionHash);
+          setTabs(3);
+        } catch (error) {
+          console.error(error);
+        }
+        setIsLoader(false);
       } else if (privyWalletReady && privyWallet) {
         const wallet = privyWallet[0];
-        await wallet.switchChain(plume.id);
         const provider = await wallet.getEthereumProvider();
         const transactionHash = await provider.request({
           method: 'eth_sendTransaction',

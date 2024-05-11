@@ -1,9 +1,9 @@
 'use client';
 
-import * as React from 'react';
 import { PrivyProvider } from '@privy-io/react-auth';
 import { useRouter } from 'next/navigation';
-import { plume } from '@/lib/plumeChain';
+import * as React from 'react';
+import { plumeTestnet } from 'wagmi/chains';
 
 export default function PrivyProviders({
   children,
@@ -23,8 +23,8 @@ export default function PrivyProviders({
           logo: process.env.NEXT_PUBLIC_COMMEMORATIVE_TOKEN_IMAGE_URL,
           walletList: ['metamask'],
         },
-        defaultChain: plume,
-        supportedChains: [plume],
+        defaultChain: plumeTestnet,
+        supportedChains: [plumeTestnet],
         loginMethods: [
           'wallet',
           'google',

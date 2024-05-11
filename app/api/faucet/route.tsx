@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
 import { ethers, JsonRpcProvider } from 'ethers';
+import { NextResponse } from 'next/server';
 import { abi } from '../../../lib/FaucetABI';
 
 const ContractAddress = process.env
@@ -26,8 +26,7 @@ export async function POST(req: Request) {
     const contract = new ethers.Contract(ContractAddress, abi, wallet);
     const faucet = await contract.sendETH(walletAddress);
     const response = await faucet.wait();
-    const transactionHash =
-      'https://plume-testnet.explorer.caldera.xyz/tx/' + response.hash;
+    const transactionHash = `https://testnet-explorer.plumenetwork.xyz/tx/${response.hash}`;
     return NextResponse.json({
       status: 200,
       title: 'Transaction Successful',

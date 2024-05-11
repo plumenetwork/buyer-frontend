@@ -1,10 +1,5 @@
 'use client';
 
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { usePrivy, useWallets } from '@privy-io/react-auth';
-import { useChainModal } from '@rainbow-me/rainbowkit';
-import { useAccount, useDisconnect, useNetwork } from 'wagmi';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,10 +8,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import makeBlockie from 'ethereum-blockies-base64';
-import { useState, useEffect, useLayoutEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
-import { plume } from '@/lib/plumeChain';
+import { usePrivy, useWallets } from '@privy-io/react-auth';
+import { useChainModal } from '@rainbow-me/rainbowkit';
+import makeBlockie from 'ethereum-blockies-base64';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useLayoutEffect, useState } from 'react';
+import { useAccount, useDisconnect, useSwitchChain } from 'wagmi';
+import { plumeTestnet } from 'wagmi/chains';
 
 function shortenAddress(address: string) {
   if (!address || address.length < 10) return address;
@@ -32,14 +32,14 @@ export default function NavBar() {
   const router = useRouter();
   const { ready, authenticated, logout } = usePrivy();
   const { wallets } = useWallets();
-  const { address, isConnected } = useAccount();
+  const { address, chainId, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
-  const { chain } = useNetwork();
   const [blockie, setBlockie] = useState('');
   const [userAddress, setUserAddress] = useState('');
   const { openChainModal, chainModalOpen } = useChainModal();
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
   const { toast } = useToast();
+  const { switchChain } = useSwitchChain();
 
   const getAddressAndGenerateBlockie = (userAddress: any) => {
     setUserAddress(userAddress);
@@ -54,21 +54,26 @@ export default function NavBar() {
       getAddressAndGenerateBlockie(userAddress);
     }
 
-    if (ready && authenticated && wallets[0]?.chainId != plume.id.toString()) {
+    if (ready && authenticated && chainId !== plumeTestnet.id) {
       (async () => {
         try {
-          await wallets[0]?.switchChain?.(plume.id);
+          switchChain({ chainId: plumeTestnet.id });
         } catch {
           toast({
             variant: 'fail',
-            title: 'wallet address changed from Plume.',
-            description: 'Please set it back to Plume Network',
+            title: 'Wrong Network',
+            description:
+              'Please set your network back to Plume Testnet to continue.',
           });
         }
       })();
     }
+
+    if (isConnected && address && chainId !== plumeTestnet.id) {
+      openChainModal?.();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wallets, ready, authenticated]);
+  }, [wallets, ready, authenticated, chainId, chainModalOpen]);
 
   useLayoutEffect(() => {
     let userAddress = '';
@@ -77,13 +82,6 @@ export default function NavBar() {
       getAddressAndGenerateBlockie(userAddress);
     }
   }, [address, isConnected]);
-
-  useEffect(() => {
-    if (isConnected && address && chain?.name != 'Plume') {
-      openChainModal?.();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chain, chainModalOpen]);
 
   const logoutHandler = () => {
     if (ready && authenticated) {
