@@ -9,9 +9,11 @@ import {
 import {
   bitgetWallet,
   coinbaseWallet,
+  foxWallet,
   injectedWallet,
   metaMaskWallet,
   okxWallet,
+  trustWallet,
 } from '@rainbow-me/rainbowkit/wallets';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WagmiProvider } from 'wagmi';
@@ -33,7 +35,9 @@ const wagmiConfig = getDefaultConfig({
         metaMaskWallet,
         bitgetWallet,
         coinbaseWallet,
+        foxWallet,
         okxWallet,
+        trustWallet,
       ],
     },
   ],
